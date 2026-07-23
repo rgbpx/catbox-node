@@ -25,6 +25,25 @@ Install the package via `bun`:
 bun add catbox-node
 ```
 
+## Documentation
+
+- [Catbox](#catbox)
+  - [Upload to Catbox from a URL](#upload-to-catbox-from-a-url)
+
+---
+
+### [Catbox](https://catbox.moe)
+
+`catbox-node` - main module with [Catbox](#catbox) upload functions.
+
+#### Upload to [Catbox](#catbox) from a `URL`
+
+```js
+import { uploadUrl } from "catbox-node";
+
+const catboxFileURL = await uploadUrl("https://example.com/file.txt");
+```
+
 ## Development Requirements
 
 - Node.js version: `>= 22.18.0`

@@ -7,7 +7,7 @@ export default defineConfig({
     profile: "node16",
   },
   entry: {
-    index: "./src/index.ts",
+    index: "./src/lib/catbox.ts",
   },
   exports: true,
   dts: true,
