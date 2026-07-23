@@ -1,0 +1,22 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true,
+
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+
+    "paths": {
+      "@src/*": ["./src/*"]
+    }
+  },
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./node_modules", "./dist"]
+}
