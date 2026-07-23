@@ -29,6 +29,14 @@
       }
     ]
   },
+  "overrides": [
+    {
+      "files": ["**/*.test.*"],
+      "rules": {
+        "max-statements": "off"
+      }
+    }
+  ],
   "categories": {
     "correctness": "error",
     "perf": "error",

@@ -51,6 +51,8 @@
     "lint:fix": "oxlint --fix ./src",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
+    "test": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
     "build": "tsdown"
   },
   "devDependencies": {
@@ -62,7 +64,8 @@
     "oxlint-tsgolint": "^7.0.2001",
     "publint": "^0.3.22",
     "tsdown": "^0.22.14",
-    "typescript": "^7.0.0"
+    "typescript": "^7.0.0",
+    "vitest": "^4.1.10"
   },
   "devEngines": {
     "runtime": [
