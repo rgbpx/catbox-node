@@ -53,6 +53,20 @@
     "@types/node": "^20.0.0",
     "typescript": "^7.0.0"
   },
+  "devEngines": {
+    "runtime": [
+      {
+        "name": "node",
+        "version": ">=20.19.0",
+        "onFail": "error"
+      },
+      {
+        "name": "bun",
+        "version": ">=1.0.36",
+        "onFail": "download"
+      }
+    ]
+  },
   "engines": {
     "bun": ">=1.0.36",
     "node": ">=20.0.0"
