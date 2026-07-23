@@ -69,13 +69,6 @@
         "version": ">=1.0.36",
         "onFail": "error"
       }
-    ],
-    "packageManager": [
-      {
-        "name": "npm",
-        "version": ">=10.9.4",
-        "onFail": "warn"
-      }
     ]
   },
   "engines": {

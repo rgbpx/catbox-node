@@ -24,3 +24,10 @@ Install the package via `bun`:
 ```sh
 bun add catbox-node
 ```
+
+## Development Requirements
+
+- Node.js version: `>= 22.18.0`
+- npm version: `>= 10.9.4`
+  - Or with npm version: `>= 10.9.3` (bundled with Node.js `22.18.0`) with `npm install --legacy-peer-deps` to resolve `tsdown` install dependencies.
+- Bun version: `>= 1.0.36`
