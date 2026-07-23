@@ -63,7 +63,7 @@
       {
         "name": "bun",
         "version": ">=1.0.36",
-        "onFail": "download"
+        "onFail": "error"
       }
     ]
   },
