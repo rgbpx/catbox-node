@@ -47,12 +47,16 @@
   },
   "scripts": {
     "typecheck": "tsc",
+    "lint": "oxlint ./src",
+    "lint:fix": "oxlint --fix ./src",
     "build": "tsdown"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
     "@tsconfig/node20": "^20.0.0",
     "@types/node": "^20.0.0",
+    "oxlint": "^1.75.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "publint": "^0.3.22",
     "tsdown": "^0.22.14",
     "typescript": "^7.0.0"
