@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["node"],
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "options": {
+    "typeAware": true,
+    "typeCheck": true,
+    "maxWarnings": 8
+  },
+  "rules": {
+    "sort-imports": "off",
+    "sort-keys": "off",
+    "no-magic-numbers": "off",
+    "capitalized-comments": "off",
+    "default-param-last": "off",
+    "max-statements": [
+      "warn",
+      {
+        "max": 12
+      }
+    ],
+    "max-params": [
+      "warn",
+      {
+        "max": 5
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.*"],
+      "rules": {
+        "max-statements": "off"
+      }
+    }
+  ],
+  "categories": {
+    "correctness": "error",
+    "perf": "error",
+    "suspicious": "warn",
+    "style": "warn",
+    "pedantic": "off"
+  }
+}

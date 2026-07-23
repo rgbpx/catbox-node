@@ -29,6 +29,58 @@
     "type": "git",
     "url": "git+https://github.com/rgbpx/catbox-node.git"
   },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "lint": "oxlint ./src",
+    "lint:fix": "oxlint --fix ./src",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "test": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "build": "tsdown"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/core": "^0.18.5",
+    "@tsconfig/node20": "^20.0.0",
+    "@types/node": "^20.0.0",
+    "oxfmt": "^0.60.0",
+    "oxlint": "^1.75.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "publint": "^0.3.22",
+    "tsdown": "^0.22.14",
+    "typescript": "^7.0.0",
+    "vitest": "^4.1.10"
+  },
+  "devEngines": {
+    "runtime": [
+      {
+        "name": "node",
+        "version": ">=22.18.0",
+        "onFail": "error"
+      },
+      {
+        "name": "bun",
+        "version": ">=1.0.36",
+        "onFail": "error"
+      }
+    ]
+  },
   "engines": {
     "bun": ">=1.0.36",
     "node": ">=20.0.0"
