@@ -14,6 +14,7 @@ jobs:
     permissions:
       contents: write # required for git operations
       id-token: write # required for OIDC
+      packages: write # required for GitHub Package Registry
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -29,7 +30,8 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 24 # OIDC requires npm v11.5.1 or later
-          registry-url: "https://registry.npmjs.org"
+          # registry-url: "https://registry.npmjs.org"
+          registry-url: "https://npm.pkg.github.com"
 
       - name: Install dependencies
         run: npm ci
