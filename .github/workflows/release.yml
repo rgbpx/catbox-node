@@ -49,10 +49,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Changelog
-        run: npm run changelog
-
       - name: Release
-        run: npm run release:check
+        run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
