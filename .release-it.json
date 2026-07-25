@@ -28,10 +28,6 @@
             "section": "Documentation"
           },
           {
-            "type": "chore",
-            "section": "Other"
-          },
-          {
             "type": "style",
             "section": "Style"
           },
