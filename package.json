@@ -56,7 +56,7 @@
     "build": "tsdown",
     "changelog": "release-it --changelog --no-git --dry-run",
     "release": "release-it",
-    "release:check": "release-it --preRelease=alpha --dry-run"
+    "release:check": "release-it --preRelease=alpha --no-git --dry-run"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
