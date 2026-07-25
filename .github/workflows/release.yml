@@ -6,7 +6,7 @@ on:
       - main
     tags:
       - "!**"
-  pull_request:   # TODO: remove
+  pull_request: # TODO: remove
   workflow_dispatch:
 
 permissions:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          fetch-depth: 0  # git history to generate changelog
+          fetch-depth: 0 # git history to generate changelog
 
       - name: git config
         run: |
