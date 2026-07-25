@@ -6,7 +6,6 @@ on:
       - main
     tags:
       - "!**"
-  pull_request: # TODO: remove
   workflow_dispatch:
 
 jobs:
