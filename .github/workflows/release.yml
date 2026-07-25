@@ -9,12 +9,12 @@ on:
   pull_request: # TODO: remove
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   release:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write # required for git operations
+      id-token: write # required for OIDC
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -29,7 +29,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: "22.18.0"
+          node-version: 24 # OIDC requires npm v11.5.1 or later
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
@@ -55,5 +56,4 @@ jobs:
       - name: Release
         run: npm run release:check
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
