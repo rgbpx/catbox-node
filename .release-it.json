@@ -1,13 +1,16 @@
 {
   "$schema": "./node_modules/release-it/schema/release-it.json",
   "git": {
-    "push": false
+    "releaseName": "${version}",
+    "tagName": "${version}",
+    "commitMessage": "chore: release ${version}"
   },
   "github": {
-    "release": false
+    "release": true
   },
   "npm": {
-    "publish": false
+    "publish": true,
+    "skipChecks": true
   },
   "plugins": {
     "@release-it/conventional-changelog": {
