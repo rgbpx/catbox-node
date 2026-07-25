@@ -57,7 +57,3 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-# GITHUB TOKEN permissionss (write?)
-# Permissions for git push
-# Permissions for github release
