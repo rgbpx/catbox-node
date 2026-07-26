@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.2](https://github.com/rgbpx/catbox-node/compare/0.1.1...0.1.2) (2026-07-26)
+
+* disable default bumper for chore ([1aed704](https://github.com/rgbpx/catbox-node/commit/1aed7046205e659caa1e00514834c3009b744ca2))
+
 ## [0.1.1](https://github.com/rgbpx/catbox-node/compare/0.1.0...0.1.1) (2026-07-25)
 
 ## [0.1.0](https://github.com/rgbpx/catbox-node/compare/0.1.0-alpha.0...0.1.0) (2026-07-25)
