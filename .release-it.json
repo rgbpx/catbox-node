@@ -45,6 +45,10 @@
           {
             "type": "perf",
             "section": "Performance"
+          },
+          {
+            "type": "chore",
+            "effect": "hidden"
           }
         ]
       }
