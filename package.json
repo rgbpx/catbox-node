@@ -54,18 +54,18 @@
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "build": "tsdown",
-    "release": "release-it -VV"
+    "release": "release-it -VV --dry-run"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
-    "@release-it/conventional-changelog": "^11.0.1",
+    "@release-it/conventional-changelog": "^12.0.0",
     "@tsconfig/node20": "^20.0.0",
     "@types/node": "^20.0.0",
     "oxfmt": "^0.60.0",
     "oxlint": "^1.75.0",
     "oxlint-tsgolint": "^7.0.2001",
     "publint": "^0.3.22",
-    "release-it": "^20.2.1",
+    "release-it": "^21.0.0",
     "tsdown": "^0.22.14",
     "typescript": "^7.0.0",
     "vitest": "^4.1.10"
