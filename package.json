@@ -54,7 +54,7 @@
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "build": "tsdown",
-    "release": "release-it"
+    "release": "release-it -VV"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",

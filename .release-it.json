@@ -48,7 +48,8 @@
           },
           {
             "type": "chore",
-            "effect": "hidden"
+            "effect": "hidden",
+            "hidden": true
           }
         ]
       }
