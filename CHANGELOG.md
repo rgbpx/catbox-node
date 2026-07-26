@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.4](https://github.com/rgbpx/catbox-node/compare/0.1.3...0.1.4) (2026-07-26)
+
+### Bug Fixes
+
+* remove verbose logging in release-it ([682d7c3](https://github.com/rgbpx/catbox-node/commit/682d7c31409b6fc88444ef995b9d6d472863c2e8))
+
 ## [0.1.3](https://github.com/rgbpx/catbox-node/compare/0.1.2...0.1.3) (2026-07-26)
 
 ## [0.1.2](https://github.com/rgbpx/catbox-node/compare/0.1.1...0.1.2) (2026-07-26)
