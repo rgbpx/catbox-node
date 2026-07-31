@@ -52,7 +52,7 @@ const parseAlbumCreateResponse = async (response: Response): Promise<string> => 
  *
  * @example
  *   const catboxFileURL = await uploadUrl("https://example.com/file.txt");
- *   const filename = toFilename(fileURL);
+ *   const filename = toFilename(catboxFileURL);
  *   const controller = new AbortController();
  *   setTimeout(() => controller.abort(), 5000);
  *
