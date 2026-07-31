@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { CATBOX_FILE_URL_PREFIX } from "@src/constants.js";
-import { uploadUrl } from "@src/lib/catbox.js";
+import {
+  CATBOX_FILE_URL_PREFIX,
+  CATBOX_MAX_FILE_BYTES,
+  CATBOX_MAX_GIF_BYTES,
+} from "@src/constants.js";
+import { uploadFile, uploadUrl } from "@src/lib/catbox.js";
 
 describe("Catbox Unit", () => {
   afterEach(() => {
@@ -71,6 +75,95 @@ describe("Catbox Unit", () => {
       const resultPromise = uploadUrl(url);
 
       await expect(resultPromise).rejects.toThrow("catbox response has no result link");
+    });
+  });
+
+  describe("uploadFile", () => {
+    it.concurrent("should upload File", async () => {
+      const mimeType = "text/plain";
+      const file = new File(["content"], "test.txt", { type: mimeType });
+      const mockResult = `${CATBOX_FILE_URL_PREFIX}abc123.txt`;
+      const mockResponse = new Response(mockResult, { status: 200 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const result = await uploadFile(file);
+
+      expect(result).toBe(mockResult);
+    });
+
+    it.concurrent("should throw if operation was aborted", async () => {
+      const mimeType = "text/plain";
+      const file = new File(["content"], "test.txt", { type: mimeType });
+      const controller = new AbortController();
+
+      const resultPromise = uploadFile(file, { signal: controller.signal });
+      controller.abort();
+
+      await expect(resultPromise).rejects.toThrow("This operation was aborted");
+    });
+
+    it.concurrent("should throw if size exceeds limit", async () => {
+      const bigData = new Uint8Array(CATBOX_MAX_FILE_BYTES + 1);
+      const bigFile = new File([bigData], "text.txt", { type: "text/plain" });
+
+      const resultPromise = uploadFile(bigFile);
+
+      await expect(resultPromise).rejects.toThrow(
+        `cannot accept ${bigFile.type} files larger than max ${CATBOX_MAX_FILE_BYTES} bytes`
+      );
+    });
+
+    it.concurrent("should throw if GIF size exceeds limit", async () => {
+      const bigGifData = new Uint8Array(CATBOX_MAX_GIF_BYTES + 1);
+      const bigGifFile = new File([bigGifData], "image.gif", { type: "image/gif" });
+
+      const resultPromise = uploadFile(bigGifFile);
+
+      await expect(resultPromise).rejects.toThrow(
+        `cannot accept ${bigGifFile.type} files larger than max ${CATBOX_MAX_GIF_BYTES} bytes`
+      );
+    });
+
+    it.concurrent("should throw if has forbidden file extension", async () => {
+      const mockFilename = "bad.exe";
+      const file = new File(["content"], mockFilename, { type: "application/octet-stream" });
+
+      const resultPromise = uploadFile(file);
+
+      await expect(resultPromise).rejects.toThrow(
+        `filename ${mockFilename} with that extension is not allowed`
+      );
+    });
+
+    it.concurrent("should throw if fetch response is not ok", async () => {
+      const mimeType = "text/plain";
+      const file = new File(["content"], "test.txt", { type: mimeType });
+      const mockResponse = new Response("Error", { status: 400 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const resultPromise = uploadFile(file);
+
+      await expect(resultPromise).rejects.toThrow("catbox upload failed 400");
+    });
+
+    it("should pass AbortSignal to fetch", async () => {
+      const mimeType = "text/plain";
+      const file = new File(["content"], "test.txt", { type: mimeType });
+      const controller = new AbortController();
+      const mockError = new DOMException("Aborted", "AbortError");
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockRejectedValueOnce(mockError);
+
+      const resultPromise = uploadFile(file, { signal: controller.signal });
+
+      await expect(resultPromise).rejects.toThrow("Aborted");
+      expect(fetchSpy).toHaveBeenCalledExactlyOnceWith(
+        expect.any(String),
+        expect.objectContaining({ signal: controller.signal })
+      );
+      expect(fetchSpy).toHaveBeenCalledOnce();
     });
   });
 });
