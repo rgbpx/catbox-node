@@ -8,6 +8,7 @@ export default defineConfig({
   },
   entry: {
     index: "./src/lib/catbox.ts",
+    litterbox: "./src/lib/litterbox.ts",
   },
   exports: true,
   dts: true,
