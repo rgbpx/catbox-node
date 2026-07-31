@@ -32,6 +32,7 @@ bun add catbox-node
   - [Upload to Catbox from a File](#upload-to-catbox-from-a-file)
   - [Catbox Album](#catbox-album)
     - [Create Catbox album](#create-catbox-album)
+    - [Delete Catbox album](#delete-catbox-album)
 - [Litterbox](#litterbox)
   - [Upload to Litterbox from a File](#upload-to-litterbox-from-a-file)
 
@@ -121,6 +122,38 @@ const albumURL = await createAlbum("Title Here", "Description Here", catboxFilen
 
 // Create anonymous album with the uploaded file
 const anonAlbumURL = await createAlbum("Title Here", "Description Here", catboxFilenames);
+```
+
+##### Delete [Catbox](#catbox) album
+
+Only albums created with a `userhash` can be **deleted**.
+
+Anonymous albums created without a `userhash` **CANNOT** be **deleted**.
+
+Use `toShort` utility to get album `short` from the Catbox album URL.
+
+```js
+import { uploadFile } from "catbox-node";
+import { toFilename, toShort } from "catbox-node/utils";
+import { createAlbum, deleteAlbum } from "catbox-node/album";
+
+// Upload a file to Catbox
+const file = new File(["content"], "test.txt", { type: "text/plain" });
+const catboxFileURL = await uploadFile(file);
+
+// Extract filename from the Catbox URL
+const catboxFilename = toFilename(catboxFileURL);
+const catboxFilenames = [catboxFilename];
+
+// Create album with the uploaded file
+const myUserhash = "####";
+const albumURL = await createAlbum("Title Here", "Description Here", catboxFilenames, {
+  userhash: myUserhash,
+});
+
+// Delete created album
+const albumShort = toShort(albumURL);
+await deleteAlbum(albumShort, { userhash: myUserhash });
 ```
 
 ### [Litterbox](https://litterbox.catbox.moe)

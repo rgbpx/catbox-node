@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CATBOX_ALBUM_MAX_ITEMS, CATBOX_ALBUM_URL_PREFIX } from "@src/constants.js";
-import { createAlbum } from "@src/lib/album.js";
+import { createAlbum, deleteAlbum } from "@src/lib/album.js";
 
 describe("Album Unit", () => {
   afterEach(() => {
@@ -90,6 +90,55 @@ describe("Album Unit", () => {
       await expect(resultPromise).rejects.toThrow(
         `cannot accept more than ${CATBOX_ALBUM_MAX_ITEMS} items`
       );
+    });
+  });
+
+  describe("deleteAlbum", () => {
+    it.concurrent("should delete album", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const mockResponse = new Response("", { status: 200 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const resultPromise = deleteAlbum(short, { userhash });
+
+      await expect(resultPromise).resolves.toBeUndefined();
+    });
+
+    it.concurrent("should throw if operation was aborted", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const controller = new AbortController();
+
+      const resultPromise = deleteAlbum(short, { userhash, signal: controller.signal });
+      controller.abort();
+
+      await expect(resultPromise).rejects.toThrow("This operation was aborted");
+    });
+
+    it.concurrent("should throw if response is not ok", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const mockResponse = new Response("Error", { status: 500 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const resultPromise = deleteAlbum(short, { userhash });
+
+      await expect(resultPromise).rejects.toThrow("catbox album delete failed 500");
+    });
+
+    it.concurrent("should throw if response body is not empty", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const mockResponse = new Response("not empty", { status: 200 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const resultPromise = deleteAlbum(short, { userhash });
+
+      await expect(resultPromise).rejects.toThrow("catbox album delete bad response");
     });
   });
 });

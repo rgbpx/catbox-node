@@ -27,6 +27,14 @@ const createAlbumCreateFormData = (
   return formData;
 };
 
+const createAlbumDeleteFormData = (short: string, userhash: string): FormData => {
+  const formData = createUploadFormData("deletealbum");
+  formData.append("short", short);
+  formData.append("userhash", userhash);
+
+  return formData;
+};
+
 const parseAlbumCreateResponse = async (response: Response): Promise<string> => {
   if (!response.ok) {
     throw new Error(`catbox album create failed ${response.status} ${response.statusText}`);
@@ -39,6 +47,18 @@ const parseAlbumCreateResponse = async (response: Response): Promise<string> => 
   }
 
   return result;
+};
+
+const parseAlbumDeleteResponse = async (response: Response): Promise<void> => {
+  if (!response.ok) {
+    throw new Error(`catbox album delete failed ${response.status} ${response.statusText}`);
+  }
+
+  const result = await response.text();
+  const resultOk = result.length === 0;
+  if (!resultOk) {
+    throw new Error(`catbox album delete bad response ${result}`);
+  }
 };
 
 /**
@@ -90,4 +110,41 @@ export const createAlbum = async (
   const result = await parseAlbumCreateResponse(response);
 
   return result;
+};
+
+/**
+ * Deletes an existing Catbox album.
+ *
+ * Only albums created with a `userhash` can be **deleted**.
+ *
+ * Anonymous albums created without a `userhash` **CANNOT** be **deleted**.
+ *
+ * Use `signal` for timeout/retries logic.
+ *
+ * @example
+ *   const myUserhash = "####";
+ *   const catboxFileURL = await uploadUrl("https://example.com/file.txt");
+ *   const filename = toFilename(catboxFileURL);
+ *   const albumURL = await createAlbum("Title Here", "Description Here", [filename], {
+ *     userhash: myUserhash,
+ *   });
+ *   const short = toShort(albumURL);
+ *   const controller = new AbortController();
+ *   setTimeout(() => controller.abort(), 5000);
+ *
+ *   await deleteAlbum(short, { userhash: myUserhash, signal: controller.signal });
+ *
+ * @param short Album `short` to delete.
+ * @param options Options with `userhash` and `signal`.
+ * @throws Throws when Catbox response status is not ok.
+ * @throws Throws when Catbox response text is not empty.
+ */
+export const deleteAlbum = async (
+  short: string,
+  options: { userhash: string; signal?: AbortSignal }
+): Promise<void> => {
+  const formData = createAlbumDeleteFormData(short, options.userhash);
+  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
+
+  await parseAlbumDeleteResponse(response);
 };
