@@ -1,6 +1,6 @@
 {
   "name": "catbox-node",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Lightweight Catbox.moe client for Node.js (and Bun) written in TypeScript with zero dependencies",
   "keywords": [
     "api",

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0](https://github.com/rgbpx/catbox-node/compare/0.1.4...0.2.0) (2026-07-31)
+
+### Features
+
+* add uploadFile ([a494127](https://github.com/rgbpx/catbox-node/commit/a494127ac5d6fa8b2a74ac1c9e16b90a30267ecb))
+
 ## [0.1.4](https://github.com/rgbpx/catbox-node/compare/0.1.3...0.1.4) (2026-07-26)
 
 ### Bug Fixes
