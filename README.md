@@ -29,6 +29,7 @@ bun add catbox-node
 
 - [Catbox](#catbox)
   - [Upload to Catbox from a URL](#upload-to-catbox-from-a-url)
+  - [Upload to Catbox from a File](#upload-to-catbox-from-a-file)
 
 ---
 
@@ -42,6 +43,42 @@ bun add catbox-node
 import { uploadUrl } from "catbox-node";
 
 const catboxFileURL = await uploadUrl("https://example.com/file.txt");
+```
+
+#### Upload to [Catbox](#catbox) from a `File`
+
+```js
+import { uploadFile } from "catbox-node";
+
+const file = new File(["content"], "file.txt", { type: "text/plain" });
+
+const catboxFileURL = await uploadFile(file);
+```
+
+or from a local path
+
+```js
+import path from "node:path";
+import { readFile } from "node:fs/promises";
+import { uploadFile } from "catbox-node";
+
+const filePath = "/path/to/file";
+const fileData = await readFile(filePath);
+const fileName = path.basename(filePath);
+const file = new File([fileData], fileName);
+
+const catboxFileURL = await uploadFile(file);
+```
+
+or from a blob
+
+```js
+import { uploadFile } from "catbox-node";
+
+const blob = new Blob(["content"], { type: "text/plain" });
+const file = new File([blob], "text.txt");
+
+const catboxFileURL = await uploadFile(file);
 ```
 
 ## Development Requirements
