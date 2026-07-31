@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0](https://github.com/rgbpx/catbox-node/compare/0.2.0...0.3.0) (2026-07-31)
+
+### Features
+
+* add litterbox ([60fc44f](https://github.com/rgbpx/catbox-node/commit/60fc44f7baeee9560279ddb009023aad8a6fa58a))
+
 ## [0.2.0](https://github.com/rgbpx/catbox-node/compare/0.1.4...0.2.0) (2026-07-31)
 
 ### Features
