@@ -30,6 +30,8 @@ bun add catbox-node
 - [Catbox](#catbox)
   - [Upload to Catbox from a URL](#upload-to-catbox-from-a-url)
   - [Upload to Catbox from a File](#upload-to-catbox-from-a-file)
+  - [Catbox Album](#catbox-album)
+    - [Create Catbox album](#create-catbox-album)
 - [Litterbox](#litterbox)
   - [Upload to Litterbox from a File](#upload-to-litterbox-from-a-file)
 
@@ -81,6 +83,44 @@ const blob = new Blob(["content"], { type: "text/plain" });
 const file = new File([blob], "text.txt");
 
 const catboxFileURL = await uploadFile(file);
+```
+
+---
+
+#### [Catbox](#catbox) Album
+
+`catbox-node/album` - sub-module with [Catbox](#catbox) album functions.
+
+##### Create [Catbox](#catbox) album
+
+Albums created without a `userhash` are **anonymous**.
+
+Albums created anonymously **CANNOT** be **edited** or **deleted**.
+
+Albums are limited to `500` files.
+
+Use `toFilename` utility to trim the filename from the Catbox URL.
+
+```js
+import { uploadFile } from "catbox-node";
+import { toFilename } from "catbox-node/utils";
+import { createAlbum } from "catbox-node/album";
+
+// Upload a file to Catbox
+const file = new File(["content"], "test.txt", { type: "text/plain" });
+const catboxFileURL = await uploadFile(file);
+
+// Extract the filename from the Catbox URL
+const catboxFilename = toFilename(catboxFileURL);
+const catboxFilenames = [catboxFilename];
+
+// Create album with the uploaded file
+const albumURL = await createAlbum("Title Here", "Description Here", catboxFilenames, {
+  userhash: "####",
+});
+
+// Create anonymous album with the uploaded file
+const anonAlbumURL = await createAlbum("Title Here", "Description Here", catboxFilenames);
 ```
 
 ### [Litterbox](https://litterbox.catbox.moe)

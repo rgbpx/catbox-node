@@ -1,4 +1,5 @@
 import {
+  CATBOX_ALBUM_MAX_ITEMS,
   CATBOX_MAX_FILE_BYTES,
   CATBOX_MAX_GIF_BYTES,
   FORBIDDEN_FILE_EXTENSIONS,
@@ -61,3 +62,11 @@ export const getCatboxMaxUploadSize = (mimeType: string): number => {
 
   return CATBOX_MAX_FILE_BYTES;
 };
+
+export const checkAlbumItemCount = (count: number) => {
+  if (count > CATBOX_ALBUM_MAX_ITEMS) {
+    throw new Error(`cannot accept more than ${CATBOX_ALBUM_MAX_ITEMS} items`);
+  }
+};
+
+export const mergeFilenames = (filenames: string[]): string => [...new Set(filenames)].join(" ");
