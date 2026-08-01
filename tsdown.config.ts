@@ -7,8 +7,10 @@ export default defineConfig({
     profile: "node16",
   },
   entry: {
+    album: "./src/lib/album.ts",
     index: "./src/lib/catbox.ts",
     litterbox: "./src/lib/litterbox.ts",
+    utils: "./src/lib/utils.ts",
   },
   exports: true,
   dts: true,

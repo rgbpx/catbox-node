@@ -1,9 +1,11 @@
 export const USER_AGENT = "rgbpx/catbox-node";
+export const FORBIDDEN_FILE_EXTENSIONS = [".exe", ".scr", ".cpl", ".doc", ".jar"] as const;
 export const CATBOX_API_ENDPOINT = "https://catbox.moe/user/api.php";
 export const CATBOX_FILE_URL_PREFIX = "https://files.catbox.moe/";
+export const CATBOX_ALBUM_URL_PREFIX = "https://catbox.moe/c/";
+export const CATBOX_ALBUM_MAX_ITEMS = 500;
 export const CATBOX_MAX_GIF_BYTES = 20 * 1024 * 1024; // 20 MB
 export const CATBOX_MAX_FILE_BYTES = 200 * 1024 * 1024; // 200 MB
-export const FORBIDDEN_FILE_EXTENSIONS = [".exe", ".scr", ".cpl", ".doc", ".jar"] as const;
 export const LITTERBOX_API_ENDPOINT = "https://litterbox.catbox.moe/resources/internals/api.php";
 export const LITTERBOX_FILE_URL_PREFIX = "https://litter.catbox.moe/";
 export const LITTERBOX_MAX_FILE_BYTES = 1024 * 1024 * 1024; // 1 GB

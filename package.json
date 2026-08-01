@@ -43,9 +43,17 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
+    "./album": {
+      "import": "./dist/album.mjs",
+      "require": "./dist/album.cjs"
+    },
     "./litterbox": {
       "import": "./dist/litterbox.mjs",
       "require": "./dist/litterbox.cjs"
+    },
+    "./utils": {
+      "import": "./dist/utils.mjs",
+      "require": "./dist/utils.cjs"
     },
     "./package.json": "./package.json"
   },
