@@ -35,6 +35,7 @@ bun add catbox-node
     - [Delete Catbox album](#delete-catbox-album)
     - [Edit Catbox album](#edit-catbox-album)
     - [Add to Catbox album](#add-to-catbox-album)
+    - [Remove from Catbox album](#remove-from-catbox-album)
 - [Litterbox](#litterbox)
   - [Upload to Litterbox from a File](#upload-to-litterbox-from-a-file)
 
@@ -164,6 +165,10 @@ Only albums created with a `userhash` can be **edited**.
 
 Anonymous albums created without a `userhash` **CANNOT** be **edited**.
 
+To only add new files, use [Add to Catbox album](#add-to-catbox-album).
+
+Or if you just want to remove the files, use [Remove from Catbox album](#remove-from-catbox-album) instead.
+
 ```js
 import { uploadFile } from "catbox-node";
 import { toFilename, toShort } from "catbox-node/utils";
@@ -210,6 +215,28 @@ const secondFilename = toFilename(secondFileURL);
 const albumShort = toShort(albumURL);
 
 await addToAlbum(albumShort, [secondFilename], { userhash: myUserhash });
+```
+
+##### Remove from [Catbox](#catbox) album
+
+Only albums created with a `userhash` can **remove** files from the album.
+
+Anonymous albums created without a `userhash` **CANNOT** **remove** files from the album.
+
+```js
+import { uploadFile } from "catbox-node";
+import { toFilename, toShort } from "catbox-node/utils";
+import { createAlbum, removeFromAlbum } from "catbox-node/album";
+
+const myUserhash = "####";
+const catboxFileURL = new File(["content"], "file.txt", { type: "text/plain" });
+const catboxFilename = toFilename(catboxFileURL);
+const albumURL = await createAlbum("Title Here", "Description Here", [catboxFilename], {
+  userhash: myUserhash,
+});
+const albumShort = toShort(albumURL);
+
+await removeFromAlbum(albumShort, [catboxFilename], { userhash: myUserhash });
 ```
 
 ### [Litterbox](https://litterbox.catbox.moe)
