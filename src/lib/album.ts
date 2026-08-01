@@ -52,6 +52,15 @@ const createAlbumEditFormData = (
   return formData;
 };
 
+const createAddToAlbumFormData = (short: string, filenames: string, userhash: string): FormData => {
+  const formData = createUploadFormData("addtoalbum");
+  formData.append("short", short);
+  formData.append("files", filenames);
+  formData.append("userhash", userhash);
+
+  return formData;
+};
+
 const parseAlbumCreateResponse = async (response: Response): Promise<string> => {
   if (!response.ok) {
     throw new Error(`catbox album create failed ${response.status} ${response.statusText}`);
@@ -81,6 +90,20 @@ const parseAlbumDeleteResponse = async (response: Response): Promise<void> => {
 const parseAlbumEditResponse = async (response: Response): Promise<string> => {
   if (!response.ok) {
     throw new Error(`catbox album edit failed ${response.status} ${response.statusText}`);
+  }
+
+  const result = await response.text();
+  const resultOk = result.startsWith(CATBOX_ALBUM_URL_PREFIX);
+  if (!resultOk) {
+    throw new Error(`catbox response has no album link ${result}`);
+  }
+
+  return result;
+};
+
+const parseAddToAlbumResponse = async (response: Response): Promise<string> => {
+  if (!response.ok) {
+    throw new Error(`catbox add to album failed ${response.status} ${response.statusText}`);
   }
 
   const result = await response.text();
@@ -184,7 +207,7 @@ export const deleteAlbum = async (
  * Edits an existing Catbox album.
  *
  * New values override existing ones. Supplying new `filenames` array will completely replace all
- * the existing files in the album.
+ * the existing files in the album. If you just want to add new files, use `addToAlbum`.
  *
  * Only albums created with a `userhash` can be **edited**.
  *
@@ -238,6 +261,52 @@ export const editAlbum = async (
   );
   const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
   const result = await parseAlbumEditResponse(response);
+
+  return result;
+};
+
+/**
+ * Adds Catbox files to a Catbox album.
+ *
+ * Only albums created with a `userhash` can **add** new files.
+ *
+ * Anonymous albums created without a `userhash` **CANNOT** **add** new files.
+ *
+ * Use `signal` for timeout/retries logic.
+ *
+ * @example
+ *   const myUserhash = "####";
+ *   const firstFileURL = await uploadUrl("https://example.com/a.txt");
+ *   const firstFilename = toFilename(firstFileURL);
+ *   const albumURL = await createAlbum("Title Here", "Description Here", [firstFilename], {
+ *     userhash: myUserhash,
+ *   });
+ *
+ *   const secondFileURL = await uploadUrl("https://example.com/b.txt");
+ *   const secondFilename = toFilename(secondFileURL);
+ *   const short = toShort(albumURL);
+ *   const controller = new AbortController();
+ *   setTimeout(() => controller.abort(), 5000);
+ *
+ *   await addToAlbum(short, [secondFilename], { userhash: myUserhash, signal: controller.signal });
+ *
+ * @param short Album `short` to delete.
+ * @param filenames List of `filenames` to add to the album.
+ * @param options Options with `userhash` and `signal`.
+ *
+ * @returns Catbox album URL.
+ * @throws Throws when Catbox response status is not ok.
+ * @throws Throws when Catbox response text does not contain Catbox album URL.
+ */
+export const addToAlbum = async (
+  short: string,
+  filenames: string[] = [],
+  options: { userhash: string; signal?: AbortSignal }
+): Promise<string> => {
+  const mergedFilenames = mergeFilenames(filenames);
+  const formData = createAddToAlbumFormData(short, mergedFilenames, options.userhash);
+  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
+  const result = await parseAddToAlbumResponse(response);
 
   return result;
 };

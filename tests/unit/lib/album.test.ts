@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CATBOX_ALBUM_MAX_ITEMS, CATBOX_ALBUM_URL_PREFIX } from "@src/constants.js";
-import { createAlbum, deleteAlbum, editAlbum } from "@src/lib/album.js";
+import { addToAlbum, createAlbum, deleteAlbum, editAlbum } from "@src/lib/album.js";
 
 describe("Album Unit", () => {
   afterEach(() => {
@@ -233,6 +233,85 @@ describe("Album Unit", () => {
       const resultPromise = editAlbum(short, title, description, filenames, { userhash });
 
       await expect(resultPromise).rejects.toThrow("catbox album edit failed 400");
+    });
+  });
+
+  describe("addToAlbum", () => {
+    it.concurrent("should add files to album", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const filenames = ["file1.jpg", "file2.png"];
+      const mockResult = `${CATBOX_ALBUM_URL_PREFIX}abc123`;
+      const mockResponse = new Response(mockResult, { status: 200 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const result = await addToAlbum(short, filenames, { userhash });
+
+      expect(result).toBe(mockResult);
+    });
+
+    it.concurrent("should throw if operation was aborted", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const controller = new AbortController();
+
+      const resultPromise = addToAlbum(short, [], { userhash, signal: controller.signal });
+      controller.abort();
+
+      await expect(resultPromise).rejects.toThrow("This operation was aborted");
+    });
+
+    it.concurrent("should use defaults when no file array is provided", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const mockResult = `${CATBOX_ALBUM_URL_PREFIX}xyz`;
+      const mockResponse = new Response(mockResult, { status: 200 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const result = await addToAlbum(short, [], { userhash });
+
+      expect(result).toContain(CATBOX_ALBUM_URL_PREFIX);
+      expect(result).toBe(mockResult);
+    });
+
+    it.concurrent("should handle empty filenames array", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const mockResult = `${CATBOX_ALBUM_URL_PREFIX}abc123`;
+      const mockResponse = new Response(mockResult, { status: 200 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const result = await addToAlbum(short, [], { userhash });
+
+      expect(result).toBe(mockResult);
+    });
+
+    it.concurrent("should throw if response does not start with catbox album URL prefix", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const mockResult = "some message";
+      const mockResponse = new Response(mockResult, { status: 200 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const resultPromise = addToAlbum(short, [], { userhash });
+
+      await expect(resultPromise).rejects.toThrow("catbox response has no album link");
+    });
+
+    it.concurrent("should throw if response is not ok", async () => {
+      const short = "abc123";
+      const userhash = "####";
+      const mockResponse = new Response("Error", { status: 500 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const resultPromise = addToAlbum(short, [], { userhash });
+
+      await expect(resultPromise).rejects.toThrow("catbox add to album failed 500");
     });
   });
 });

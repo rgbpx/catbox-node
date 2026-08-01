@@ -34,6 +34,7 @@ bun add catbox-node
     - [Create Catbox album](#create-catbox-album)
     - [Delete Catbox album](#delete-catbox-album)
     - [Edit Catbox album](#edit-catbox-album)
+    - [Add to Catbox album](#add-to-catbox-album)
 - [Litterbox](#litterbox)
   - [Upload to Litterbox from a File](#upload-to-litterbox-from-a-file)
 
@@ -184,6 +185,31 @@ const albumShort = toShort(albumURL);
 await editAlbum(albumShort, "New Title Here", "New Description Here", [newCatboxFilenames], {
   userhash: myUserhash,
 });
+```
+
+##### Add to [Catbox](#catbox) album
+
+Only albums created with a `userhash` can **add** new files.
+
+Anonymous albums created without a `userhash` **CANNOT** **add** new files.
+
+```js
+import { uploadFile } from "catbox-node";
+import { toFilename, toShort } from "catbox-node/utils";
+import { createAlbum, addToAlbum } from "catbox-node/album";
+
+const myUserhash = "####";
+const firstFileURL = new File(["content"], "a.txt", { type: "text/plain" });
+const firstFilename = toFilename(firstFileURL);
+const albumURL = await createAlbum("Title Here", "Description Here", [firstFilename], {
+  userhash: myUserhash,
+});
+
+const secondFileURL = new File(["content"], "b.txt", { type: "text/plain" });
+const secondFilename = toFilename(secondFileURL);
+const albumShort = toShort(albumURL);
+
+await addToAlbum(albumShort, [secondFilename], { userhash: myUserhash });
 ```
 
 ### [Litterbox](https://litterbox.catbox.moe)
