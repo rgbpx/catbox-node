@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.4.0](https://github.com/rgbpx/catbox-node/compare/0.3.0...0.4.0) (2026-08-01)
+
+### Features
+
+* add addToAlbum to album submodule ([6c253c1](https://github.com/rgbpx/catbox-node/commit/6c253c1fdb45c88bde859aab80a65d26ccda1a7a))
+* add album submodule with createAlbum ([d4de311](https://github.com/rgbpx/catbox-node/commit/d4de31191899c271bbbbab0fee199335a91ed623))
+* add deleteAlbum to album submodule ([ed6bb56](https://github.com/rgbpx/catbox-node/commit/ed6bb569dd2d2ac7fab33a8a130721edf9821880))
+* add editAlbum to album submodule ([886b057](https://github.com/rgbpx/catbox-node/commit/886b057eeac05e9cc8546a29d69bd5d99d60b750))
+* add removeFromAlbum to album submodule ([262e9d3](https://github.com/rgbpx/catbox-node/commit/262e9d36b1a03b7ac4b6f0248a92c9e14665ffff))
+* add toShort album utility to utils submodule ([53f7b40](https://github.com/rgbpx/catbox-node/commit/53f7b408f15738ab11ef1c550c38956282e4388e))
+* add utils submodule with toFilename ([1e0379a](https://github.com/rgbpx/catbox-node/commit/1e0379a79ddf45cba57ad22bbe4e7fedff4088a6))
+
+### Documentation
+
+* fix createAlbum variable name in JSDoc example ([f7ec910](https://github.com/rgbpx/catbox-node/commit/f7ec910ba7e4282912c426e5283f467128f1016f))
+
+### Tests
+
+* add utils submodule tests for toFilename ([e5cfe1c](https://github.com/rgbpx/catbox-node/commit/e5cfe1c1ce4736a54312bdf7a34bf0fecc09b608))
+
 ## [0.3.0](https://github.com/rgbpx/catbox-node/compare/0.2.0...0.3.0) (2026-07-31)
 
 ### Features
