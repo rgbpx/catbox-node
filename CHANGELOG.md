@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.0](https://github.com/rgbpx/catbox-node/compare/0.4.1...0.5.0) (2026-08-02)
+
+### Features
+
+* export limit constants from utils submodule and add utils section ([8d57ae2](https://github.com/rgbpx/catbox-node/commit/8d57ae2b9b206f493d3e9866715740a7f32a24d5))
+
 ## [0.4.1](https://github.com/rgbpx/catbox-node/compare/0.4.0...0.4.1) (2026-08-02)
 
 ### Documentation
