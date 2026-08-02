@@ -168,9 +168,6 @@ const parseRemoveFromAlbumResponse = async (response: Response): Promise<string>
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox album URL.
- * @throws Throws when `filenames` item count is over the maximum Catbox allowed limit.
- * @throws Throws when Catbox response status is not ok.
- * @throws Throws when Catbox response text does not contain Catbox album URL.
  */
 export const createAlbum = async (
   title: string = "",
@@ -217,8 +214,6 @@ export const createAlbum = async (
  *
  * @param short Album `short` to delete.
  * @param options Options with `userhash` and `signal`.
- * @throws Throws when Catbox response status is not ok.
- * @throws Throws when Catbox response text is not empty.
  */
 export const deleteAlbum = async (
   short: string,
@@ -269,8 +264,6 @@ export const deleteAlbum = async (
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox album URL.
- * @throws Throws when Catbox response status is not ok.
- * @throws Throws when Catbox response text does not contain Catbox album URL.
  */
 export const editAlbum = async (
   short: string,
@@ -323,8 +316,6 @@ export const editAlbum = async (
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox album URL.
- * @throws Throws when Catbox response status is not ok.
- * @throws Throws when Catbox response text does not contain Catbox album URL.
  */
 export const addToAlbum = async (
   short: string,
@@ -366,8 +357,6 @@ export const addToAlbum = async (
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox album URL.
- * @throws Throws when Catbox response status is not ok.
- * @throws Throws when Catbox response text does not contain Catbox album URL.
  */
 export const removeFromAlbum = async (
   short: string,

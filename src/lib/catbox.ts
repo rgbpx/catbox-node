@@ -65,11 +65,6 @@ const parseUploadResponse = async (response: Response): Promise<string> => {
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox file URL.
- * @throws Throws when provided URL is invalid.
- * @throws Throws when provided URL protocol is not http(s).
- * @throws Throws when operation was aborted using provided `signal`.
- * @throws Throws when Catbox response status is not ok.
- * @throws Throws when Catbox response text does not contain Catbox file URL.
  */
 export const uploadUrl = async (
   url: string,
@@ -107,12 +102,6 @@ export const uploadUrl = async (
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox file URL.
- * @throws Throws when `File` size is over Catbox max file size limit.
- * @throws Throws when GIF `File` size is over Catbox max GIF size limit.
- * @throws Throws when file extension is not allowed by Catbox.
- * @throws Throws when operation was aborted using provided `signal`.
- * @throws Throws when Catbox response status is not ok.
- * @throws Throws when Catbox response text does not contain Catbox file URL.
  */
 export const uploadFile = async (
   file: File,

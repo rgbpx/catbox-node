@@ -73,11 +73,6 @@ const parseUploadResponse = async (response: Response): Promise<string> => {
  * @param options Options with `duration`, `filenameLength`, `signal`.
  *
  * @returns Litterbox file URL.
- * @throws Throws when `File` size is over Litterbox max file size limit.
- * @throws Throws when file extension is not allowed by Litterbox.
- * @throws Throws when operation was aborted using provided `signal`.
- * @throws Throws when Litterbox response status is not ok.
- * @throws Throws when Litterbox response text does not contain Litterbox file URL.
  */
 export const uploadFile = async (
   file: File,
