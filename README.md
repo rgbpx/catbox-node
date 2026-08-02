@@ -2,6 +2,8 @@
   <img src="assets/catbox-node.png">
 </p>
 
+![NPM Version](https://img.shields.io/npm/v/catbox-node)
+
 # catbox-node
 
 Lightweight Catbox.moe client for Node.js (and Bun) written in TypeScript with zero dependencies.
