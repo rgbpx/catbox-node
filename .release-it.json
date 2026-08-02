@@ -14,6 +14,7 @@
   },
   "plugins": {
     "@release-it/conventional-changelog": {
+      "bumpStrict": true,
       "infile": "CHANGELOG.md",
       "preset": {
         "name": "conventionalcommits",
@@ -28,28 +29,38 @@
           },
           {
             "type": "docs",
-            "section": "Documentation"
+            "section": "Documentation",
+            "effect": "changelog"
           },
           {
             "type": "style",
-            "section": "Style"
-          },
-          {
-            "type": "refactor",
-            "section": "Refactoring"
-          },
-          {
-            "type": "test",
-            "section": "Tests"
+            "section": "Style",
+            "effect": "changelog"
           },
           {
             "type": "perf",
-            "section": "Performance"
+            "section": "Performance",
+            "effect": "changelog"
+          },
+          {
+            "type": "test",
+            "effect": "hidden"
+          },
+          {
+            "type": "refactor",
+            "effect": "hidden"
+          },
+          {
+            "type": "build",
+            "effect": "hidden"
+          },
+          {
+            "type": "ci",
+            "effect": "hidden"
           },
           {
             "type": "chore",
-            "effect": "hidden",
-            "hidden": true
+            "effect": "hidden"
           }
         ]
       }
