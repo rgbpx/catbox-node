@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.1](https://github.com/rgbpx/catbox-node/compare/0.4.0...0.4.1) (2026-08-02)
+
+### Documentation
+
+* add downloads badge to readme ([189de89](https://github.com/rgbpx/catbox-node/commit/189de899a6b190a9ee44f917f1191976f99e7d07))
+* add npm badge to readme ([0d02dd4](https://github.com/rgbpx/catbox-node/commit/0d02dd4e39ad41c35c4e9d498746aa0ca3d57f4a))
+* remove blob upload example from readme ([b52a5df](https://github.com/rgbpx/catbox-node/commit/b52a5dffb30523f5c27ee122e4e439468d5be8c6))
+* remove development requirements section from readme ([43f3c14](https://github.com/rgbpx/catbox-node/commit/43f3c141c51f5db45661e690ff5a65677c28d0e9))
+* remove throw statements from jsdoc ([ebf359b](https://github.com/rgbpx/catbox-node/commit/ebf359b6c021332df025e4ab329f7641c8e4fb0f))
+* simplify readme styling ([3057348](https://github.com/rgbpx/catbox-node/commit/3057348ab511f99eeeee4f76e912e0d5312a89fd))
+
 ## [0.4.0](https://github.com/rgbpx/catbox-node/compare/0.3.0...0.4.0) (2026-08-01)
 
 ### Features
