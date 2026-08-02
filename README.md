@@ -41,6 +41,9 @@ bun add catbox-node
     - [Remove from Catbox album](#remove-from-catbox-album)
 - [Litterbox](#litterbox)
   - [Upload to Litterbox from a File](#upload-to-litterbox-from-a-file)
+- [Utils](#utils)
+  - [Converters](#converters)
+  - [Limits](#limits)
 
 ---
 
@@ -243,4 +246,30 @@ import { uploadFile } from "catbox-node/litterbox";
 const file = new File(["content"], "file.txt", { type: "text/plain" });
 
 const litterboxURL = await uploadFile(file);
+```
+
+### Utils
+
+`catbox-node/utils` - sub-module with helper utility constants and functions.
+
+#### Converters
+
+Useful helper functions to convert Catbox URLs to use in Catbox operations.
+
+```js
+import { toShort, toFilename } from "catbox-node/utils";
+```
+
+#### Limits
+
+Access various Catbox/Litterbox limits via constants.
+
+```js
+import {
+  FORBIDDEN_FILE_EXTENSIONS,
+  CATBOX_MAX_FILE_BYTES,
+  CATBOX_MAX_GIF_BYTES,
+  LITTERBOX_MAX_FILE_BYTES,
+  CATBOX_ALBUM_MAX_ITEMS,
+} from "catbox-node/utils";
 ```
