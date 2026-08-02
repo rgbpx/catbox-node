@@ -41,11 +41,11 @@ bun add catbox-node
 
 ---
 
-### [Catbox](https://catbox.moe)
+### Catbox
 
-`catbox-node` - main module with [Catbox](#catbox) upload functions.
+`catbox-node` - main module with Catbox upload functions.
 
-#### Upload to [Catbox](#catbox) from a `URL`
+#### Upload to Catbox from a URL
 
 ```js
 import { uploadUrl } from "catbox-node";
@@ -53,7 +53,7 @@ import { uploadUrl } from "catbox-node";
 const catboxFileURL = await uploadUrl("https://example.com/file.txt");
 ```
 
-#### Upload to [Catbox](#catbox) from a `File`
+#### Upload to Catbox from a File
 
 ```js
 import { uploadFile } from "catbox-node";
@@ -91,11 +91,11 @@ const catboxFileURL = await uploadFile(file);
 
 ---
 
-#### [Catbox](#catbox) Album
+#### Catbox Album
 
-`catbox-node/album` - sub-module with [Catbox](#catbox) album functions.
+`catbox-node/album` - sub-module with Catbox album functions.
 
-##### Create [Catbox](#catbox) album
+##### Create Catbox album
 
 Albums created without a `userhash` are **anonymous**.
 
@@ -127,7 +127,7 @@ const albumURL = await createAlbum("Title Here", "Description Here", catboxFilen
 const anonAlbumURL = await createAlbum("Title Here", "Description Here", catboxFilenames);
 ```
 
-##### Delete [Catbox](#catbox) album
+##### Delete Catbox album
 
 Only albums created with a `userhash` can be **deleted**.
 
@@ -159,7 +159,7 @@ const albumShort = toShort(albumURL);
 await deleteAlbum(albumShort, { userhash: myUserhash });
 ```
 
-##### Edit [Catbox](#catbox) album
+##### Edit Catbox album
 
 Only albums created with a `userhash` can be **edited**.
 
@@ -192,7 +192,7 @@ await editAlbum(albumShort, "New Title Here", "New Description Here", [newCatbox
 });
 ```
 
-##### Add to [Catbox](#catbox) album
+##### Add to Catbox album
 
 Only albums created with a `userhash` can **add** new files.
 
@@ -217,7 +217,7 @@ const albumShort = toShort(albumURL);
 await addToAlbum(albumShort, [secondFilename], { userhash: myUserhash });
 ```
 
-##### Remove from [Catbox](#catbox) album
+##### Remove from Catbox album
 
 Only albums created with a `userhash` can **remove** files from the album.
 
@@ -239,11 +239,11 @@ const albumShort = toShort(albumURL);
 await removeFromAlbum(albumShort, [catboxFilename], { userhash: myUserhash });
 ```
 
-### [Litterbox](https://litterbox.catbox.moe)
+### Litterbox
 
-`catbox-node/litterbox` - sub-module with [Litterbox](#litterbox) upload functions.
+`catbox-node/litterbox` - sub-module with Litterbox upload functions.
 
-#### Upload to [Litterbox](#litterbox) from a `File`
+#### Upload to Litterbox from a File
 
 ```js
 import { uploadFile } from "catbox-node/litterbox";
