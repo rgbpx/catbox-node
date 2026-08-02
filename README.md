@@ -3,6 +3,7 @@
 </p>
 
 ![NPM Version](https://img.shields.io/npm/v/catbox-node)
+![NPM Downloads](https://img.shields.io/npm/dw/catbox-node)
 
 # catbox-node
 
