@@ -15,7 +15,6 @@ import { CATBOX_ALBUM_URL_PREFIX, CATBOX_FILE_URL_PREFIX } from "@src/constants.
  * @param albumUrl Catbox album URL to convert to `short`.
  *
  * @returns Catbox album `short` for album operations.
- * @throws Throws when `albumUrl` is not a Catbox album URL.
  */
 export const toShort = (albumUrl: string) => {
   if (!albumUrl.startsWith(CATBOX_ALBUM_URL_PREFIX)) {
@@ -40,7 +39,6 @@ export const toShort = (albumUrl: string) => {
  * @param fileUrl Catbox file URL to convert to `filename`.
  *
  * @returns Catbox file `filename` for album items operations.
- * @throws Throws when `fileUrl` is not a Catbox file URL.
  */
 export const toFilename = (fileUrl: string) => {
   if (!fileUrl.startsWith(CATBOX_FILE_URL_PREFIX)) {
