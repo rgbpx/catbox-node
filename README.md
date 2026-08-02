@@ -78,17 +78,6 @@ const file = new File([fileData], fileName);
 const catboxFileURL = await uploadFile(file);
 ```
 
-or from a blob
-
-```js
-import { uploadFile } from "catbox-node";
-
-const blob = new Blob(["content"], { type: "text/plain" });
-const file = new File([blob], "text.txt");
-
-const catboxFileURL = await uploadFile(file);
-```
-
 ---
 
 #### Catbox Album
