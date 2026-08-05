@@ -4,6 +4,7 @@
 
 ![NPM Version](https://img.shields.io/npm/v/catbox-node)
 ![NPM Downloads](https://img.shields.io/npm/dw/catbox-node)
+[![CI](https://github.com/rgbpx/catbox-node/actions/workflows/ci.yml/badge.svg)](https://github.com/rgbpx/catbox-node/actions/workflows/ci.yml)
 
 # catbox-node
 
