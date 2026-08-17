@@ -203,16 +203,22 @@ import { toFilename, toShort } from "catbox-node/utils";
 import { createAlbum, addToAlbum } from "catbox-node/album";
 
 const myUserhash = "####";
-const firstFileURL = new File(["content"], "a.txt", { type: "text/plain" });
+
+// Create album with a first file
+const firstFile = new File(["first"], "first.txt", { type: "text/plain" });
+const firstFileURL = await uploadFile(firstFile);
 const firstFilename = toFilename(firstFileURL);
 const albumURL = await createAlbum("Title Here", "Description Here", [firstFilename], {
   userhash: myUserhash,
 });
 
-const secondFileURL = new File(["content"], "b.txt", { type: "text/plain" });
+// Create a second file
+const secondFile = new File(["second"], "second.txt", { type: "text/plain" });
+const secondFileURL = await uploadFile(secondFile);
 const secondFilename = toFilename(secondFileURL);
-const albumShort = toShort(albumURL);
 
+// Add the second file to the album
+const albumShort = toShort(albumURL);
 await addToAlbum(albumShort, [secondFilename], { userhash: myUserhash });
 ```
 
