@@ -75,14 +75,11 @@ const catboxFileURL = await uploadFile(file);
 or from a local path
 
 ```js
-import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { uploadFile } from "catbox-node";
 
-const filePath = "/path/to/file";
-const fileData = await readFile(filePath);
-const fileName = path.basename(filePath);
-const file = new File([fileData], fileName);
+const data = await readFile("/path/to/file");
+const file = new File([data], "image.jpeg", { type: "image/jpeg" });
 
 const catboxFileURL = await uploadFile(file);
 ```
