@@ -170,19 +170,23 @@ import { toFilename, toShort } from "catbox-node/utils";
 import { createAlbum, editAlbum } from "catbox-node/album";
 
 const myUserhash = "####";
-const catboxFileURL = new File(["content"], "a.txt", { type: "text/plain" });
+
+// Create album with a file
+const file = new File(["A"], "a.txt", { type: "text/plain" });
+const catboxFileURL = await uploadFile(file);
 const catboxFilename = toFilename(catboxFileURL);
-const catboxFilenames = [catboxFilename];
-const albumURL = await createAlbum("Title Here", "Description Here", catboxFilenames, {
+const albumURL = await createAlbum("Title Here", "Description Here", [catboxFilename], {
   userhash: myUserhash,
 });
 
-const newCatboxFileURL = new File(["content"], "b.txt", { type: "text/plain" });
+// Create a new file
+const newFile = new File(["B"], "b.txt", { type: "text/plain" });
+const newCatboxFileURL = await uploadFile(newFile);
 const newCatboxFilename = toFilename(newCatboxFileURL);
-const newCatboxFilenames = [newCatboxFilename];
-const albumShort = toShort(albumURL);
 
-await editAlbum(albumShort, "New Title Here", "New Description Here", [newCatboxFilenames], {
+// Update album replacing old file with a new file
+const albumShort = toShort(albumURL);
+await editAlbum(albumShort, "New Title Here", "New Description Here", [newCatboxFilename], {
   userhash: myUserhash,
 });
 ```
