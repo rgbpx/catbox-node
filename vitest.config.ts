@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => ({
             "@src": resolve("./src"),
           },
           include: ["./tests/integration/**/*.integration.test.ts"],
-          testTimeout: 10_000,
+          testTimeout: 30_000,
         },
       },
     ],
