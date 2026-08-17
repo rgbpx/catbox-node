@@ -37,6 +37,7 @@ bun add catbox-node
 
 ## Documentation
 
+- [Userhash](#userhash)
 - [Catbox](#catbox)
   - [Upload to Catbox from a URL](#upload-to-catbox-from-a-url)
   - [Upload to Catbox from a File](#upload-to-catbox-from-a-file)
@@ -53,6 +54,14 @@ bun add catbox-node
   - [Limits](#limits)
 
 ---
+
+### Userhash
+
+To get `userhash`, you need to register a Catbox account:
+
+1. Create a free account at [Catbox Registration](https://catbox.moe/user/register.php) page.
+2. Login on the [Catbox Login](https://catbox.moe/user/login.php) page.
+3. Obtain `userhash` from the [Manage Account](https://catbox.moe/user/manage.php) page.
 
 ### Catbox
 
