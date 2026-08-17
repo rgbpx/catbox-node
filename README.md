@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="assets/catbox-node.png">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/catbox-node-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/catbox-node-light.png">
+    <img alt="catbox-node" src="assets/catbox-node-dark.png">
+  </picture>
 </p>
 
 ![NPM Version](https://img.shields.io/npm/v/catbox-node?logo=npm&logoColor=959DA5&labelColor=363d45)
