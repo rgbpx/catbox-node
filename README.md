@@ -52,6 +52,7 @@ bun add catbox-node
 - [Utils](#utils)
   - [Converters](#converters)
   - [Limits](#limits)
+- [Development](#development)
 
 ---
 
@@ -298,3 +299,7 @@ import {
   CATBOX_ALBUM_MAX_ITEMS,
 } from "catbox-node/utils";
 ```
+
+### Development
+
+To run integration tests locally, you need to set the `CATBOX_USERHASH` environment variable to your [Userhash](#userhash) in `.env.test.local` file.
