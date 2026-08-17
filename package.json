@@ -64,7 +64,7 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "test": "vitest run --project unit",
-    "test:integration": "vitest run --project integration",
+    "test:integration": "vitest run --project integration --mode test",
     "build": "tsdown",
     "release": "release-it"
   },
