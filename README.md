@@ -108,18 +108,15 @@ import { createAlbum } from "catbox-node/album";
 // Upload a file to Catbox
 const file = new File(["content"], "test.txt", { type: "text/plain" });
 const catboxFileURL = await uploadFile(file);
-
-// Extract the filename from the Catbox URL
 const catboxFilename = toFilename(catboxFileURL);
-const catboxFilenames = [catboxFilename];
 
 // Create album with the uploaded file
-const albumURL = await createAlbum("Title Here", "Description Here", catboxFilenames, {
+const albumURL = await createAlbum("Title Here", "Description Here", [catboxFilename], {
   userhash: "####",
 });
 
 // Create anonymous album with the uploaded file
-const anonAlbumURL = await createAlbum("Title Here", "Description Here", catboxFilenames);
+const anonAlbumURL = await createAlbum("Title Here", "Description Here", [catboxFilename]);
 ```
 
 ##### Delete Catbox album
