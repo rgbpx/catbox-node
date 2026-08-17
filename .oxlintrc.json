@@ -16,6 +16,7 @@
     "no-magic-numbers": "off",
     "capitalized-comments": "off",
     "default-param-last": "off",
+    "one-var": "off",
     "max-statements": [
       "warn",
       {
