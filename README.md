@@ -1,9 +1,13 @@
 <p align="center">
-  <img src="assets/catbox-node.png">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/catbox-node-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/catbox-node-light.png">
+    <img alt="catbox-node" src="assets/catbox-node-dark.png">
+  </picture>
 </p>
 
-![NPM Version](https://img.shields.io/npm/v/catbox-node)
-![NPM Downloads](https://img.shields.io/npm/dw/catbox-node)
+![NPM Version](https://img.shields.io/npm/v/catbox-node?logo=npm&logoColor=959DA5&labelColor=363d45)
+![NPM Downloads](https://img.shields.io/npm/dw/catbox-node?logo=npm&logoColor=959DA5&labelColor=363d45&color=0FBF3E)
 [![CI](https://github.com/rgbpx/catbox-node/actions/workflows/ci.yml/badge.svg)](https://github.com/rgbpx/catbox-node/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/rgbpx/catbox-node/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/rgbpx/catbox-node/actions/workflows/github-code-scanning/codeql)
 [![Dependabot Updates](https://github.com/rgbpx/catbox-node/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/rgbpx/catbox-node/actions/workflows/dependabot/dependabot-updates)
@@ -33,6 +37,7 @@ bun add catbox-node
 
 ## Documentation
 
+- [Userhash](#userhash)
 - [Catbox](#catbox)
   - [Upload to Catbox from a URL](#upload-to-catbox-from-a-url)
   - [Upload to Catbox from a File](#upload-to-catbox-from-a-file)
@@ -49,6 +54,14 @@ bun add catbox-node
   - [Limits](#limits)
 
 ---
+
+### Userhash
+
+To get `userhash`, you need to register a Catbox account:
+
+1. Create a free account at [Catbox Registration](https://catbox.moe/user/register.php) page.
+2. Login on the [Catbox Login](https://catbox.moe/user/login.php) page.
+3. Obtain `userhash` from the [Manage Account](https://catbox.moe/user/manage.php) page.
 
 ### Catbox
 
@@ -75,14 +88,11 @@ const catboxFileURL = await uploadFile(file);
 or from a local path
 
 ```js
-import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { uploadFile } from "catbox-node";
 
-const filePath = "/path/to/file";
-const fileData = await readFile(filePath);
-const fileName = path.basename(filePath);
-const file = new File([fileData], fileName);
+const data = await readFile("/path/to/file");
+const file = new File([data], "image.jpeg", { type: "image/jpeg" });
 
 const catboxFileURL = await uploadFile(file);
 ```
@@ -111,18 +121,15 @@ import { createAlbum } from "catbox-node/album";
 // Upload a file to Catbox
 const file = new File(["content"], "test.txt", { type: "text/plain" });
 const catboxFileURL = await uploadFile(file);
-
-// Extract the filename from the Catbox URL
 const catboxFilename = toFilename(catboxFileURL);
-const catboxFilenames = [catboxFilename];
 
 // Create album with the uploaded file
-const albumURL = await createAlbum("Title Here", "Description Here", catboxFilenames, {
+const albumURL = await createAlbum("Title Here", "Description Here", [catboxFilename], {
   userhash: "####",
 });
 
 // Create anonymous album with the uploaded file
-const anonAlbumURL = await createAlbum("Title Here", "Description Here", catboxFilenames);
+const anonAlbumURL = await createAlbum("Title Here", "Description Here", [catboxFilename]);
 ```
 
 ##### Delete Catbox album
@@ -138,21 +145,19 @@ import { uploadFile } from "catbox-node";
 import { toFilename, toShort } from "catbox-node/utils";
 import { createAlbum, deleteAlbum } from "catbox-node/album";
 
+const myUserhash = "####";
+
 // Upload a file to Catbox
 const file = new File(["content"], "test.txt", { type: "text/plain" });
 const catboxFileURL = await uploadFile(file);
-
-// Extract filename from the Catbox URL
 const catboxFilename = toFilename(catboxFileURL);
-const catboxFilenames = [catboxFilename];
 
 // Create album with the uploaded file
-const myUserhash = "####";
-const albumURL = await createAlbum("Title Here", "Description Here", catboxFilenames, {
+const albumURL = await createAlbum("Title Here", "Description Here", [catboxFilename], {
   userhash: myUserhash,
 });
 
-// Delete created album
+// Delete the created album
 const albumShort = toShort(albumURL);
 await deleteAlbum(albumShort, { userhash: myUserhash });
 ```
@@ -173,19 +178,23 @@ import { toFilename, toShort } from "catbox-node/utils";
 import { createAlbum, editAlbum } from "catbox-node/album";
 
 const myUserhash = "####";
-const catboxFileURL = new File(["content"], "a.txt", { type: "text/plain" });
+
+// Create album with a file
+const file = new File(["A"], "a.txt", { type: "text/plain" });
+const catboxFileURL = await uploadFile(file);
 const catboxFilename = toFilename(catboxFileURL);
-const catboxFilenames = [catboxFilename];
-const albumURL = await createAlbum("Title Here", "Description Here", catboxFilenames, {
+const albumURL = await createAlbum("Title Here", "Description Here", [catboxFilename], {
   userhash: myUserhash,
 });
 
-const newCatboxFileURL = new File(["content"], "b.txt", { type: "text/plain" });
+// Create a new file
+const newFile = new File(["B"], "b.txt", { type: "text/plain" });
+const newCatboxFileURL = await uploadFile(newFile);
 const newCatboxFilename = toFilename(newCatboxFileURL);
-const newCatboxFilenames = [newCatboxFilename];
-const albumShort = toShort(albumURL);
 
-await editAlbum(albumShort, "New Title Here", "New Description Here", [newCatboxFilenames], {
+// Update album replacing old file with a new file
+const albumShort = toShort(albumURL);
+await editAlbum(albumShort, "New Title Here", "New Description Here", [newCatboxFilename], {
   userhash: myUserhash,
 });
 ```
@@ -202,16 +211,22 @@ import { toFilename, toShort } from "catbox-node/utils";
 import { createAlbum, addToAlbum } from "catbox-node/album";
 
 const myUserhash = "####";
-const firstFileURL = new File(["content"], "a.txt", { type: "text/plain" });
+
+// Create album with a first file
+const firstFile = new File(["first"], "first.txt", { type: "text/plain" });
+const firstFileURL = await uploadFile(firstFile);
 const firstFilename = toFilename(firstFileURL);
 const albumURL = await createAlbum("Title Here", "Description Here", [firstFilename], {
   userhash: myUserhash,
 });
 
-const secondFileURL = new File(["content"], "b.txt", { type: "text/plain" });
+// Create a second file
+const secondFile = new File(["second"], "second.txt", { type: "text/plain" });
+const secondFileURL = await uploadFile(secondFile);
 const secondFilename = toFilename(secondFileURL);
-const albumShort = toShort(albumURL);
 
+// Add the second file to the album
+const albumShort = toShort(albumURL);
 await addToAlbum(albumShort, [secondFilename], { userhash: myUserhash });
 ```
 
@@ -227,13 +242,17 @@ import { toFilename, toShort } from "catbox-node/utils";
 import { createAlbum, removeFromAlbum } from "catbox-node/album";
 
 const myUserhash = "####";
-const catboxFileURL = new File(["content"], "file.txt", { type: "text/plain" });
+
+// Create album with a file
+const file = new File(["content"], "file.txt", { type: "text/plain" });
+const catboxFileURL = await uploadFile(file);
 const catboxFilename = toFilename(catboxFileURL);
 const albumURL = await createAlbum("Title Here", "Description Here", [catboxFilename], {
   userhash: myUserhash,
 });
-const albumShort = toShort(albumURL);
 
+// Remove the file from the album
+const albumShort = toShort(albumURL);
 await removeFromAlbum(albumShort, [catboxFilename], { userhash: myUserhash });
 ```
 
@@ -248,7 +267,10 @@ import { uploadFile } from "catbox-node/litterbox";
 
 const file = new File(["content"], "file.txt", { type: "text/plain" });
 
-const litterboxURL = await uploadFile(file);
+const litterboxURL = await uploadFile(file, {
+  duration: "1h",
+  filenameLength: 6,
+});
 ```
 
 ### Utils
