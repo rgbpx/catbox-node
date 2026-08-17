@@ -254,7 +254,10 @@ import { uploadFile } from "catbox-node/litterbox";
 
 const file = new File(["content"], "file.txt", { type: "text/plain" });
 
-const litterboxURL = await uploadFile(file);
+const litterboxURL = await uploadFile(file, {
+  duration: "1h",
+  filenameLength: 6,
+});
 ```
 
 ### Utils
