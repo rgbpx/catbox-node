@@ -234,13 +234,17 @@ import { toFilename, toShort } from "catbox-node/utils";
 import { createAlbum, removeFromAlbum } from "catbox-node/album";
 
 const myUserhash = "####";
-const catboxFileURL = new File(["content"], "file.txt", { type: "text/plain" });
+
+// Create album with a file
+const file = new File(["content"], "file.txt", { type: "text/plain" });
+const catboxFileURL = await uploadFile(file);
 const catboxFilename = toFilename(catboxFileURL);
 const albumURL = await createAlbum("Title Here", "Description Here", [catboxFilename], {
   userhash: myUserhash,
 });
-const albumShort = toShort(albumURL);
 
+// Remove the file from the album
+const albumShort = toShort(albumURL);
 await removeFromAlbum(albumShort, [catboxFilename], { userhash: myUserhash });
 ```
 
