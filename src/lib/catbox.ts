@@ -1,12 +1,14 @@
-import { assertStartsWith } from "../assertions.js";
+import { assertEqualTo, assertStartsWith } from "../assertions.js";
 import {
   CATBOX_API_ENDPOINT,
   CATBOX_FILE_URL_PREFIX,
   CATBOX_MAX_FILE_BYTES,
   CATBOX_MAX_GIF_BYTES,
 } from "../constants.js";
+import { stringifyFilenames } from "../parser.js";
 import {
   appendFile,
+  appendFilenames,
   appendReqType,
   appendUrl,
   appendUserhash,
@@ -126,4 +128,25 @@ export const uploadFile = async (
   assertStartsWith(result, CATBOX_FILE_URL_PREFIX, "catbox response");
 
   return result;
+};
+
+export const deleteFiles = async (
+  filenames: string[],
+  options: { userhash: string; signal?: AbortSignal }
+): Promise<void> => {
+  const payload = createUploadPayload();
+  appendReqType(payload, "deletefiles");
+
+  appendFilenames(payload, stringifyFilenames(filenames));
+
+  const userhashTrimmed = options.userhash.trim();
+  assertUserhash(userhashTrimmed);
+  appendUserhash(payload, userhashTrimmed);
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertEqualTo(result, "Files successfully deleted.", "catbox delete files response");
 };
