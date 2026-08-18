@@ -20,7 +20,7 @@
     "max-statements": [
       "warn",
       {
-        "max": 12
+        "max": 14
       }
     ],
     "max-params": [
