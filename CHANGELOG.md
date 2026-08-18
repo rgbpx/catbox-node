@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0](https://github.com/rgbpx/catbox-node/compare/0.6.0...1.0.0) (2026-08-18)
+
+### ⚠ BREAKING CHANGES
+
+* first release
+
+* release ([687a8ee](https://github.com/rgbpx/catbox-node/commit/687a8eea497073bdb3867a517ef954788055fc9d))
+
 ## [0.6.0](https://github.com/rgbpx/catbox-node/compare/0.5.0...0.6.0) (2026-08-18)
 
 ### Features
