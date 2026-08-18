@@ -1,4 +1,4 @@
-import { CATBOX_ALBUM_URL_PREFIX, CATBOX_FILE_URL_PREFIX } from "@src/constants.js";
+import { CATBOX_ALBUM_URL_PREFIX, CATBOX_FILE_URL_PREFIX } from "../constants.js";
 
 /**
  * Extracts Catbox album `short` from Catbox album URL.

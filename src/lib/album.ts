@@ -1,146 +1,19 @@
-import { CATBOX_ALBUM_URL_PREFIX, CATBOX_API_ENDPOINT } from "@src/constants.js";
+import { assertEqualTo, assertStartsWith } from "../assertions.js";
+import { CATBOX_ALBUM_URL_PREFIX, CATBOX_API_ENDPOINT } from "../constants.js";
+import { stringifyFilenames } from "../parser.js";
 import {
-  checkAlbumItemCount,
-  createUploadFormData,
-  mergeFilenames,
-  postFormData,
-} from "@src/helpers.js";
-
-const createAlbumCreateFormData = (
-  title: string,
-  description: string,
-  filenames?: string,
-  userhash?: string
-): FormData => {
-  const formData = createUploadFormData("createalbum");
-  formData.append("title", title);
-  formData.append("desc", description);
-
-  if (filenames) {
-    formData.append("files", filenames);
-  }
-
-  if (userhash) {
-    formData.append("userhash", userhash);
-  }
-
-  return formData;
-};
-
-const createAlbumDeleteFormData = (short: string, userhash: string): FormData => {
-  const formData = createUploadFormData("deletealbum");
-  formData.append("short", short);
-  formData.append("userhash", userhash);
-
-  return formData;
-};
-
-const createAlbumEditFormData = (
-  short: string,
-  title: string,
-  description: string,
-  filenames: string,
-  userhash: string
-): FormData => {
-  const formData = createUploadFormData("editalbum");
-  formData.append("short", short);
-  formData.append("title", title);
-  formData.append("desc", description);
-  formData.append("files", filenames);
-  formData.append("userhash", userhash);
-
-  return formData;
-};
-
-const createAddToAlbumFormData = (short: string, filenames: string, userhash: string): FormData => {
-  const formData = createUploadFormData("addtoalbum");
-  formData.append("short", short);
-  formData.append("files", filenames);
-  formData.append("userhash", userhash);
-
-  return formData;
-};
-
-const createRemoveFromAlbumFormData = (
-  short: string,
-  filenames: string,
-  userhash: string
-): FormData => {
-  const formData = createUploadFormData("removefromalbum");
-  formData.append("short", short);
-  formData.append("files", filenames);
-  formData.append("userhash", userhash);
-
-  return formData;
-};
-
-const parseAlbumCreateResponse = async (response: Response): Promise<string> => {
-  if (!response.ok) {
-    throw new Error(`catbox album create failed ${response.status} ${response.statusText}`);
-  }
-
-  const result = await response.text();
-  const resultOk = result.startsWith(CATBOX_ALBUM_URL_PREFIX);
-  if (!resultOk) {
-    throw new Error(`catbox response has no album link ${result}`);
-  }
-
-  return result;
-};
-
-const parseAlbumDeleteResponse = async (response: Response): Promise<void> => {
-  if (!response.ok) {
-    throw new Error(`catbox album delete failed ${response.status} ${response.statusText}`);
-  }
-
-  const result = await response.text();
-  const resultOk = result.length === 0;
-  if (!resultOk) {
-    throw new Error(`catbox album delete bad response ${result}`);
-  }
-};
-
-const parseAlbumEditResponse = async (response: Response): Promise<string> => {
-  if (!response.ok) {
-    throw new Error(`catbox album edit failed ${response.status} ${response.statusText}`);
-  }
-
-  const result = await response.text();
-  const resultOk = result.startsWith(CATBOX_ALBUM_URL_PREFIX);
-  if (!resultOk) {
-    throw new Error(`catbox response has no album link ${result}`);
-  }
-
-  return result;
-};
-
-const parseAddToAlbumResponse = async (response: Response): Promise<string> => {
-  if (!response.ok) {
-    throw new Error(`catbox add to album failed ${response.status} ${response.statusText}`);
-  }
-
-  const result = await response.text();
-  const resultOk = result.startsWith(CATBOX_ALBUM_URL_PREFIX);
-  if (!resultOk) {
-    throw new Error(`catbox response has no album link ${result}`);
-  }
-
-  return result;
-};
-
-const parseRemoveFromAlbumResponse = async (response: Response): Promise<string> => {
-  if (!response.ok) {
-    throw new Error(`catbox remove from album failed ${response.status} ${response.statusText}`);
-  }
-
-  const result = await response.text();
-  const resultOk = result.startsWith(CATBOX_ALBUM_URL_PREFIX);
-  if (!resultOk) {
-    throw new Error(`catbox response has no album link ${result}`);
-  }
-
-  return result;
-};
+  appendAlbumShort,
+  appendDescription,
+  appendFilenames,
+  appendReqType,
+  appendTitle,
+  appendUserhash,
+  assertAlbumShort,
+  assertAlbumSize,
+  assertUserhash,
+  createUploadPayload,
+  uploadPayload,
+} from "../payload.js";
 
 /**
  * Creates a new Catbox album.
@@ -175,17 +48,28 @@ export const createAlbum = async (
   filenames: string[] = [],
   options?: { userhash?: string; signal?: AbortSignal }
 ): Promise<string> => {
-  checkAlbumItemCount(filenames.length);
+  const payload = createUploadPayload();
+  appendReqType(payload, "createalbum");
 
-  const mergedFilenames = mergeFilenames(filenames);
-  const formData = createAlbumCreateFormData(
-    title,
-    description,
-    mergedFilenames,
-    options?.userhash
-  );
-  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
-  const result = await parseAlbumCreateResponse(response);
+  appendTitle(payload, title);
+  appendDescription(payload, description);
+
+  assertAlbumSize(filenames.length);
+  appendFilenames(payload, stringifyFilenames(filenames));
+
+  if (options?.userhash) {
+    const userhashTrimmed = options.userhash.trim();
+
+    assertUserhash(userhashTrimmed);
+    appendUserhash(payload, userhashTrimmed);
+  }
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertStartsWith(result, CATBOX_ALBUM_URL_PREFIX, "catbox album response");
 
   return result;
 };
@@ -219,10 +103,22 @@ export const deleteAlbum = async (
   short: string,
   options: { userhash: string; signal?: AbortSignal }
 ): Promise<void> => {
-  const formData = createAlbumDeleteFormData(short, options.userhash);
-  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
+  const payload = createUploadPayload();
+  appendReqType(payload, "deletealbum");
 
-  await parseAlbumDeleteResponse(response);
+  assertAlbumShort(short);
+  appendAlbumShort(payload, short);
+
+  const userhashTrimmed = options.userhash.trim();
+  assertUserhash(userhashTrimmed);
+  appendUserhash(payload, userhashTrimmed);
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertEqualTo(result.length, 0, "catbox album delete response length");
 };
 
 /**
@@ -272,16 +168,28 @@ export const editAlbum = async (
   filenames: string[],
   options: { userhash: string; signal?: AbortSignal }
 ): Promise<string> => {
-  const mergedFilenames = mergeFilenames(filenames);
-  const formData = createAlbumEditFormData(
-    short,
-    title,
-    description,
-    mergedFilenames,
-    options.userhash
-  );
-  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
-  const result = await parseAlbumEditResponse(response);
+  const payload = createUploadPayload();
+  appendReqType(payload, "editalbum");
+
+  assertAlbumShort(short);
+  appendAlbumShort(payload, short);
+
+  appendTitle(payload, title);
+  appendDescription(payload, description);
+
+  assertAlbumSize(filenames.length);
+  appendFilenames(payload, stringifyFilenames(filenames));
+
+  const userhashTrimmed = options.userhash.trim();
+  assertUserhash(userhashTrimmed);
+  appendUserhash(payload, userhashTrimmed);
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertStartsWith(result, CATBOX_ALBUM_URL_PREFIX, "catbox album response");
 
   return result;
 };
@@ -322,10 +230,25 @@ export const addToAlbum = async (
   filenames: string[] = [],
   options: { userhash: string; signal?: AbortSignal }
 ): Promise<string> => {
-  const mergedFilenames = mergeFilenames(filenames);
-  const formData = createAddToAlbumFormData(short, mergedFilenames, options.userhash);
-  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
-  const result = await parseAddToAlbumResponse(response);
+  const payload = createUploadPayload();
+  appendReqType(payload, "addtoalbum");
+
+  assertAlbumShort(short);
+  appendAlbumShort(payload, short);
+
+  assertAlbumSize(filenames.length);
+  appendFilenames(payload, stringifyFilenames(filenames));
+
+  const userhashTrimmed = options.userhash.trim();
+  assertUserhash(userhashTrimmed);
+  appendUserhash(payload, userhashTrimmed);
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertStartsWith(result, CATBOX_ALBUM_URL_PREFIX, "catbox album response");
 
   return result;
 };
@@ -363,10 +286,25 @@ export const removeFromAlbum = async (
   filenames: string[] = [],
   options: { userhash: string; signal?: AbortSignal }
 ): Promise<string> => {
-  const mergedFilenames = mergeFilenames(filenames);
-  const formData = createRemoveFromAlbumFormData(short, mergedFilenames, options.userhash);
-  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
-  const result = await parseRemoveFromAlbumResponse(response);
+  const payload = createUploadPayload();
+  appendReqType(payload, "removefromalbum");
+
+  assertAlbumShort(short);
+  appendAlbumShort(payload, short);
+
+  assertAlbumSize(filenames.length);
+  appendFilenames(payload, stringifyFilenames(filenames));
+
+  const userhashTrimmed = options.userhash.trim();
+  assertUserhash(userhashTrimmed);
+  appendUserhash(payload, userhashTrimmed);
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertStartsWith(result, CATBOX_ALBUM_URL_PREFIX, "catbox album response");
 
   return result;
 };

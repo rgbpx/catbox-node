@@ -1,46 +1,21 @@
-import { CATBOX_API_ENDPOINT, CATBOX_FILE_URL_PREFIX } from "../constants.js";
+import { assertStartsWith } from "../assertions.js";
 import {
-  checkFileExtension,
-  checkFileSize,
-  createUploadFormData,
-  getCatboxMaxUploadSize,
-  parseUrl,
-  postFormData,
-} from "../helpers.js";
-
-const createUrlUploadFormData = (url: string, userhash?: string): FormData => {
-  const formData = createUploadFormData("urlupload");
-  formData.append("url", url);
-  if (userhash) {
-    formData.append("userhash", userhash);
-  }
-
-  return formData;
-};
-
-const createFileUploadFormData = (file: File, userhash?: string): FormData => {
-  const formData = createUploadFormData("fileupload");
-  formData.append("fileToUpload", file, file.name);
-  if (userhash) {
-    formData.append("userhash", userhash);
-  }
-
-  return formData;
-};
-
-const parseUploadResponse = async (response: Response): Promise<string> => {
-  if (!response.ok) {
-    throw new Error(`catbox upload failed ${response.status} ${response.statusText}`);
-  }
-
-  const result = await response.text();
-  const resultOk = result.startsWith(CATBOX_FILE_URL_PREFIX);
-  if (!resultOk) {
-    throw new Error(`catbox response has no result link ${result}`);
-  }
-
-  return result;
-};
+  CATBOX_API_ENDPOINT,
+  CATBOX_FILE_URL_PREFIX,
+  CATBOX_MAX_FILE_BYTES,
+  CATBOX_MAX_GIF_BYTES,
+} from "../constants.js";
+import {
+  appendFile,
+  appendReqType,
+  appendUrl,
+  appendUserhash,
+  assertFile,
+  assertUrl,
+  assertUserhash,
+  createUploadPayload,
+  uploadPayload,
+} from "../payload.js";
 
 /**
  * Uploads a file to Catbox from a `URL`.
@@ -70,10 +45,26 @@ export const uploadUrl = async (
   url: string,
   options?: { userhash?: string; signal?: AbortSignal }
 ): Promise<string> => {
-  const parsedUrl = parseUrl(url);
-  const formData = createUrlUploadFormData(parsedUrl, options?.userhash);
-  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
-  const result = await parseUploadResponse(response);
+  const payload = createUploadPayload();
+  appendReqType(payload, "urlupload");
+
+  const urlTrimmed = url.trim();
+  assertUrl(urlTrimmed);
+  appendUrl(payload, urlTrimmed);
+
+  if (options?.userhash) {
+    const userhashTrimmed = options.userhash.trim();
+
+    assertUserhash(userhashTrimmed);
+    appendUserhash(payload, userhashTrimmed);
+  }
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertStartsWith(result, CATBOX_FILE_URL_PREFIX, "catbox response");
 
   return result;
 };
@@ -107,14 +98,30 @@ export const uploadFile = async (
   file: File,
   options?: { userhash?: string; signal?: AbortSignal }
 ): Promise<string> => {
-  const maxFileSize = getCatboxMaxUploadSize(file.type);
+  const payload = createUploadPayload();
+  appendReqType(payload, "fileupload");
 
-  checkFileExtension(file);
-  checkFileSize(file, maxFileSize);
+  if (file.type === "image/gif" || file.name.endsWith(".gif")) {
+    assertFile(file, CATBOX_MAX_GIF_BYTES);
+  } else {
+    assertFile(file, CATBOX_MAX_FILE_BYTES);
+  }
 
-  const formData = createFileUploadFormData(file, options?.userhash);
-  const response = await postFormData(formData, CATBOX_API_ENDPOINT, options?.signal);
-  const result = await parseUploadResponse(response);
+  appendFile(payload, file);
+
+  if (options?.userhash) {
+    const userhashTrimmed = options.userhash.trim();
+
+    assertUserhash(userhashTrimmed);
+    appendUserhash(payload, userhashTrimmed);
+  }
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertStartsWith(result, CATBOX_FILE_URL_PREFIX, "catbox response");
 
   return result;
 };

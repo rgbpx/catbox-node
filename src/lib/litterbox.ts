@@ -1,3 +1,4 @@
+import { assertStartsWith } from "../assertions.js";
 import {
   LITTERBOX_API_ENDPOINT,
   LITTERBOX_DURATIONS,
@@ -6,11 +7,14 @@ import {
   LITTERBOX_MAX_FILE_BYTES,
 } from "../constants.js";
 import {
-  checkFileExtension,
-  checkFileSize,
-  createUploadFormData,
-  postFormData,
-} from "../helpers.js";
+  appendFile,
+  appendFilenameLength,
+  appendReqType,
+  appendTime,
+  assertFile,
+  createUploadPayload,
+  uploadPayload,
+} from "../payload.js";
 
 /**
  * Litterbox file duration after which the file is deleted.
@@ -21,33 +25,6 @@ export type LitterboxDuration = (typeof LITTERBOX_DURATIONS)[number];
  * Litterbox filename length to be used in the file URL.
  */
 export type LitterboxFilenameLength = (typeof LITTERBOX_FILENAME_LENGTHS)[number];
-
-const createFileUploadFormData = (
-  file: File,
-  duration: LitterboxDuration = "1h",
-  filenameLength: LitterboxFilenameLength = 6
-): FormData => {
-  const formData = createUploadFormData("fileupload");
-  formData.append("fileToUpload", file, file.name);
-  formData.append("time", duration);
-  formData.append("fileNameLength", filenameLength);
-
-  return formData;
-};
-
-const parseUploadResponse = async (response: Response): Promise<string> => {
-  if (!response.ok) {
-    throw new Error(`litterbox upload failed ${response.status} ${response.statusText}`);
-  }
-
-  const result = await response.text();
-  const resultOk = result.startsWith(LITTERBOX_FILE_URL_PREFIX);
-  if (!resultOk) {
-    throw new Error(`litterbox response has no result link ${result}`);
-  }
-
-  return result;
-};
 
 /**
  * Uploads a temporary file to Litterbox from a `File`.
@@ -82,12 +59,26 @@ export const uploadFile = async (
     signal?: AbortSignal;
   }
 ): Promise<string> => {
-  checkFileExtension(file);
-  checkFileSize(file, LITTERBOX_MAX_FILE_BYTES);
+  const payload = createUploadPayload();
+  appendReqType(payload, "fileupload");
 
-  const formData = createFileUploadFormData(file, options?.duration, options?.filenameLength);
-  const response = await postFormData(formData, LITTERBOX_API_ENDPOINT, options?.signal);
-  const result = await parseUploadResponse(response);
+  assertFile(file, LITTERBOX_MAX_FILE_BYTES);
+  appendFile(payload, file);
+
+  if (options?.duration) {
+    appendTime(payload, options.duration);
+  }
+
+  if (options?.filenameLength) {
+    appendFilenameLength(payload, options.filenameLength);
+  }
+
+  const result = await uploadPayload(payload, LITTERBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Litterbox",
+  });
+
+  assertStartsWith(result, LITTERBOX_FILE_URL_PREFIX, "litterbox response");
 
   return result;
 };

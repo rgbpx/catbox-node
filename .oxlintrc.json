@@ -20,7 +20,13 @@
     "max-statements": [
       "warn",
       {
-        "max": 12
+        "max": 14
+      }
+    ],
+    "id-length": [
+      "warn",
+      {
+        "checkGeneric": false
       }
     ],
     "max-params": [

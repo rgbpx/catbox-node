@@ -8,7 +8,6 @@ export default defineConfig(({ mode }) => ({
       {
         test: {
           name: "unit",
-          bail: 1,
           alias: {
             "@src": resolve("./src"),
           },
