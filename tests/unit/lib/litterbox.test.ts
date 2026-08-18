@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LITTERBOX_FILE_URL_PREFIX, LITTERBOX_MAX_FILE_BYTES } from "@src/constants.js";
+import {
+  FORBIDDEN_FILE_EXTENSIONS,
+  LITTERBOX_FILE_URL_PREFIX,
+  LITTERBOX_MAX_FILE_BYTES,
+} from "@src/constants.js";
 import { uploadFile } from "@src/lib/litterbox.js";
 
 describe("Litterbox Unit", () => {
@@ -32,14 +36,14 @@ describe("Litterbox Unit", () => {
       await expect(resultPromise).rejects.toThrow("This operation was aborted");
     });
 
-    it.concurrent("should throw if size exceeds limit", async () => {
+    it.concurrent("should throw if file size exceeds limit", async () => {
       const bigData = new Uint8Array(LITTERBOX_MAX_FILE_BYTES + 1);
       const bigFile = new File([bigData], "text.txt", { type: "text/plain" });
 
       const resultPromise = uploadFile(bigFile);
 
       await expect(resultPromise).rejects.toThrow(
-        `cannot accept ${bigFile.type} files larger than max ${LITTERBOX_MAX_FILE_BYTES} bytes`
+        `file size (${bigFile.size}) must be less than or equal to ${LITTERBOX_MAX_FILE_BYTES}.`
       );
     });
 
@@ -50,20 +54,28 @@ describe("Litterbox Unit", () => {
       const resultPromise = uploadFile(file);
 
       await expect(resultPromise).rejects.toThrow(
-        `filename ${mockFilename} with that extension is not allowed`
+        `file extension ("${mockFilename}") must not match any of: ${FORBIDDEN_FILE_EXTENSIONS.join(", ")}.`
       );
     });
 
     it.concurrent("should throw if fetch response is not ok", async () => {
       const mimeType = "text/plain";
       const file = new File(["content"], "test.txt", { type: mimeType });
-      const mockResponse = new Response("Error", { status: 400 });
+      const mockStatusCode = 400;
+      const mockStatusText = "Bad Request";
+      const mockResult = "Internal Error";
+      const mockResponse = new Response(mockResult, {
+        status: mockStatusCode,
+        statusText: mockStatusText,
+      });
       const fetchSpy = vi.spyOn(globalThis, "fetch");
       fetchSpy.mockResolvedValueOnce(mockResponse);
 
       const resultPromise = uploadFile(file);
 
-      await expect(resultPromise).rejects.toThrow("litterbox upload failed 400");
+      await expect(resultPromise).rejects.toThrow(
+        `HTTP ${mockStatusCode} ${mockStatusText} Litterbox ${mockResult}`
+      );
     });
 
     it("should pass AbortSignal to fetch", async () => {

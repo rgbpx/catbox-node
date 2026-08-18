@@ -3,6 +3,7 @@ import {
   CATBOX_FILE_URL_PREFIX,
   CATBOX_MAX_FILE_BYTES,
   CATBOX_MAX_GIF_BYTES,
+  FORBIDDEN_FILE_EXTENSIONS,
 } from "@src/constants.js";
 import { uploadFile, uploadUrl } from "@src/lib/catbox.js";
 
@@ -39,42 +40,56 @@ describe("Catbox Unit", () => {
       await expect(resultPromise).rejects.toThrow("This operation was aborted");
     });
 
-    it.concurrent("should throw for bad URL input", async () => {
+    it.concurrent("should throw for invalid URL input", async () => {
       const url = "example.com";
 
       const resultPromise = uploadUrl(url);
 
-      await expect(resultPromise).rejects.toThrow("Invalid URL");
+      await expect(resultPromise).rejects.toThrow(`input url ("${url}") is not a valid URL.`);
     });
 
-    it.concurrent("should throw for bad URL protocol", async () => {
-      const url = "ftp://example.com";
+    it.concurrent("should throw for invalid URL protocol", async () => {
+      const protocol = "ftp:";
+      const url = `${protocol}example.com`;
 
       const resultPromise = uploadUrl(url);
 
-      await expect(resultPromise).rejects.toThrow("URL must use http(s) protocol");
+      await expect(resultPromise).rejects.toThrow(
+        `input url protocol ("${protocol}") must match one of: http, https.`
+      );
     });
 
     it.concurrent("should throw if response is not ok", async () => {
       const url = "https://example.com/file.txt";
-      const mockResponse = new Response("Server error", { status: 500 });
+      const mockStatusCode = 500;
+      const mockStatusText = "Internal Server Error";
+      const mockResult = "Server error";
+      const mockResponse = new Response(mockResult, {
+        status: mockStatusCode,
+        statusText: mockStatusText,
+      });
       const fetchSpy = vi.spyOn(globalThis, "fetch");
       fetchSpy.mockResolvedValueOnce(mockResponse);
 
       const resultPromise = uploadUrl(url);
 
-      await expect(resultPromise).rejects.toThrow("catbox upload failed 500");
+      await expect(resultPromise).rejects.toThrow(
+        `HTTP ${mockStatusCode} ${mockStatusText} Catbox ${mockResult}`
+      );
     });
 
     it.concurrent("should throw if response does not start with catbox file URL prefix", async () => {
       const url = "https://example.com/file.txt";
-      const mockResponse = new Response("some error message", { status: 200 });
+      const mockResult = "Server error";
+      const mockResponse = new Response(mockResult, { status: 200 });
       const fetchSpy = vi.spyOn(globalThis, "fetch");
       fetchSpy.mockResolvedValueOnce(mockResponse);
 
       const resultPromise = uploadUrl(url);
 
-      await expect(resultPromise).rejects.toThrow("catbox response has no result link");
+      await expect(resultPromise).rejects.toThrow(
+        `catbox response ("${mockResult}") must start with "${CATBOX_FILE_URL_PREFIX}".`
+      );
     });
   });
 
@@ -103,25 +118,47 @@ describe("Catbox Unit", () => {
       await expect(resultPromise).rejects.toThrow("This operation was aborted");
     });
 
-    it.concurrent("should throw if size exceeds limit", async () => {
+    it.concurrent("should throw if file size exceeds limit", async () => {
       const bigData = new Uint8Array(CATBOX_MAX_FILE_BYTES + 1);
       const bigFile = new File([bigData], "text.txt", { type: "text/plain" });
 
       const resultPromise = uploadFile(bigFile);
 
       await expect(resultPromise).rejects.toThrow(
-        `cannot accept ${bigFile.type} files larger than max ${CATBOX_MAX_FILE_BYTES} bytes`
+        `file size (${bigFile.size}) must be less than or equal to ${CATBOX_MAX_FILE_BYTES}.`
       );
     });
 
-    it.concurrent("should throw if GIF size exceeds limit", async () => {
+    it.concurrent("should throw if file with GIF mime exceeds size limit", async () => {
+      const bigGifData = new Uint8Array(CATBOX_MAX_GIF_BYTES + 1);
+      const bigGifFile = new File([bigGifData], "image", { type: "image/gif" });
+
+      const resultPromise = uploadFile(bigGifFile);
+
+      await expect(resultPromise).rejects.toThrow(
+        `file size (${bigGifFile.size}) must be less than or equal to ${CATBOX_MAX_GIF_BYTES}.`
+      );
+    });
+
+    it.concurrent("should throw if file with GIF extension exceeds size limit", async () => {
+      const bigGifData = new Uint8Array(CATBOX_MAX_GIF_BYTES + 1);
+      const bigGifFile = new File([bigGifData], "image.gif");
+
+      const resultPromise = uploadFile(bigGifFile);
+
+      await expect(resultPromise).rejects.toThrow(
+        `file size (${bigGifFile.size}) must be less than or equal to ${CATBOX_MAX_GIF_BYTES}.`
+      );
+    });
+
+    it.concurrent("should throw if GIF file exceeds size limit", async () => {
       const bigGifData = new Uint8Array(CATBOX_MAX_GIF_BYTES + 1);
       const bigGifFile = new File([bigGifData], "image.gif", { type: "image/gif" });
 
       const resultPromise = uploadFile(bigGifFile);
 
       await expect(resultPromise).rejects.toThrow(
-        `cannot accept ${bigGifFile.type} files larger than max ${CATBOX_MAX_GIF_BYTES} bytes`
+        `file size (${bigGifFile.size}) must be less than or equal to ${CATBOX_MAX_GIF_BYTES}.`
       );
     });
 
@@ -132,20 +169,28 @@ describe("Catbox Unit", () => {
       const resultPromise = uploadFile(file);
 
       await expect(resultPromise).rejects.toThrow(
-        `filename ${mockFilename} with that extension is not allowed`
+        `file extension ("${mockFilename}") must not match any of: ${FORBIDDEN_FILE_EXTENSIONS.join(", ")}.`
       );
     });
 
     it.concurrent("should throw if fetch response is not ok", async () => {
       const mimeType = "text/plain";
       const file = new File(["content"], "test.txt", { type: mimeType });
-      const mockResponse = new Response("Error", { status: 400 });
+      const mockStatusCode = 400;
+      const mockStatusText = "Bad Request";
+      const mockResult = "Internal Error";
+      const mockResponse = new Response(mockResult, {
+        status: mockStatusCode,
+        statusText: mockStatusText,
+      });
       const fetchSpy = vi.spyOn(globalThis, "fetch");
       fetchSpy.mockResolvedValueOnce(mockResponse);
 
       const resultPromise = uploadFile(file);
 
-      await expect(resultPromise).rejects.toThrow("catbox upload failed 400");
+      await expect(resultPromise).rejects.toThrow(
+        `HTTP ${mockStatusCode} ${mockStatusText} Catbox ${mockResult}`
+      );
     });
 
     it("should pass AbortSignal to fetch", async () => {
