@@ -1,12 +1,14 @@
-import { assertStartsWith } from "../assertions.js";
+import { assertEqualTo, assertStartsWith } from "../assertions.js";
 import {
   CATBOX_API_ENDPOINT,
   CATBOX_FILE_URL_PREFIX,
   CATBOX_MAX_FILE_BYTES,
   CATBOX_MAX_GIF_BYTES,
 } from "../constants.js";
+import { stringifyFilenames } from "../parser.js";
 import {
   appendFile,
+  appendFilenames,
   appendReqType,
   appendUrl,
   appendUserhash,
@@ -126,4 +128,53 @@ export const uploadFile = async (
   assertStartsWith(result, CATBOX_FILE_URL_PREFIX, "catbox response");
 
   return result;
+};
+
+/**
+ * Deletes a file uploaded to Catbox with a userhash.
+ *
+ * You **MUST** supply `userhash` the file was uploaded with.
+ *
+ * Only files uploaded with a `userhash` **CAN** be **removed**.
+ *
+ * Use `signal` for timeout/retries logic.
+ *
+ * @example
+ *   const myUserhash = "####";
+ *   const file = new File(["content"], "file.txt", { type: "text/plain" });
+ *
+ *   const catboxFileUrl = await uploadFile(file, { userhash: myUserhash });
+ *   const catboxFilename = toFilename(catboxFileUrl);
+ *
+ *   const controller = new AbortController();
+ *   setTimeout(() => controller.abort(), 5000); // abort after 5 seconds
+ *
+ *   const result = await deleteFiles([catboxFilename], {
+ *     userhash: myUserhash,
+ *     signal: controller.signal,
+ *   });
+ *
+ * @param filenames Catbox filename array.
+ * @param options Options with required `userhash` and optional `signal`.
+ * @throws For invalid inputs or network failures and error responses.
+ */
+export const deleteFiles = async (
+  filenames: string[],
+  options: { userhash: string; signal?: AbortSignal }
+): Promise<void> => {
+  const payload = createUploadPayload();
+  appendReqType(payload, "deletefiles");
+
+  appendFilenames(payload, stringifyFilenames(filenames));
+
+  const userhashTrimmed = options.userhash.trim();
+  assertUserhash(userhashTrimmed);
+  appendUserhash(payload, userhashTrimmed);
+
+  const result = await uploadPayload(payload, CATBOX_API_ENDPOINT, {
+    signal: options?.signal,
+    service: "Catbox",
+  });
+
+  assertEqualTo(result, "Files successfully deleted.", "catbox delete files response");
 };

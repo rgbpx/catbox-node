@@ -13,6 +13,7 @@ import { parseUrl } from "./parser.js";
 export type CatboxReqType =
   | "fileupload"
   | "urlupload"
+  | "deletefiles"
   | "createalbum"
   | "editalbum"
   | "addtoalbum"

@@ -41,6 +41,7 @@ bun add catbox-node
 - [Catbox](#catbox)
   - [Upload to Catbox from a URL](#upload-to-catbox-from-a-url)
   - [Upload to Catbox from a File](#upload-to-catbox-from-a-file)
+  - [Delete Files](#delete-files)
   - [Catbox Album](#catbox-album)
     - [Create Catbox album](#create-catbox-album)
     - [Delete Catbox album](#delete-catbox-album)
@@ -96,6 +97,21 @@ const data = await readFile("/path/to/file");
 const file = new File([data], "image.jpeg", { type: "image/jpeg" });
 
 const catboxFileURL = await uploadFile(file);
+```
+
+#### Delete Files
+
+```js
+import { deleteFiles } from "catbox-node";
+import { toFilename } from "catbox-node/utils";
+
+const myUserhash = "####";
+const file = new File(["content"], "file.txt", { type: "text/plain" });
+
+const catboxFileURL = await uploadFile(file, { userhash: myUserhash });
+const catboxFilename = toFilename(catboxFileUrl);
+
+const result = await deleteFiles([catboxFilename], { userhash: myUserhash });
 ```
 
 ---

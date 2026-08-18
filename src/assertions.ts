@@ -11,7 +11,7 @@ export const assertGreaterThan = (value: number, min: number, label: string = "V
 export const assertLessThanOrEqual = (value: number, max: number, label: string = "Value"): void =>
   assert(value <= max, new RangeError(`${label} (${value}) must be less than or equal to ${max}.`));
 
-export const assertEqualTo = (value: number, expected: number, label: string = "Value"): void =>
+export const assertEqualTo = <T>(value: T, expected: T, label: string = "Value"): void =>
   assert(value === expected, new RangeError(`${label} (${value}) must be equal to ${expected}.`));
 
 export const assertStartsWith = (value: string, prefix: string, label: string = "Value"): void =>
