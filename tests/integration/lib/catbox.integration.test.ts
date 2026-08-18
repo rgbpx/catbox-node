@@ -1,8 +1,10 @@
+import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { CATBOX_FILE_URL_PREFIX } from "@src/constants.js";
-import { uploadFile, uploadUrl } from "@src/lib/catbox.js";
+import { uploadUrl, uploadFile, deleteFiles } from "@src/lib/catbox.js";
+import { toFilename } from "@src/lib/utils.js";
 
 const pauseMsg = "Uploads paused until I can resolve storage issues. Sorry!";
 const userhash = process.env.CATBOX_USERHASH as string;
@@ -78,6 +80,32 @@ describe("Catbox Integration", () => {
       const resultPromise = uploadFile(file, { userhash: rnd });
 
       await expect(resultPromise).rejects.toThrow("HTTP 412 Catbox Not signed in!");
+    });
+  });
+
+  describe("deleteFiles", () => {
+    it.concurrent("should delete a file", async () => {
+      const file = new File([randomUUID()], "test.txt", { type: "text/plain" });
+
+      const catboxFileUrl = await uploadFile(file, { userhash });
+      const catboxFilename = toFilename(catboxFileUrl);
+
+      const resultPromise = deleteFiles([catboxFilename], { userhash });
+
+      await expect(resultPromise).resolves.toBeUndefined();
+    });
+
+    it.concurrent("should throw error when trying to delete a file that didn't belong to that userhash", async () => {
+      const file = new File([randomUUID()], "test.txt", { type: "text/plain" });
+
+      const catboxFileUrl = await uploadFile(file);
+      const catboxFilename = toFilename(catboxFileUrl);
+
+      const resultPromise = deleteFiles([catboxFilename], { userhash });
+
+      await expect(resultPromise).rejects.toThrow(
+        "HTTP 412 Catbox Tried to delete a file that didn't belong to that userhash."
+      );
     });
   });
 });
