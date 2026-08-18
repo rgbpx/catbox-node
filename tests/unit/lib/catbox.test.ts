@@ -5,7 +5,7 @@ import {
   CATBOX_MAX_GIF_BYTES,
   FORBIDDEN_FILE_EXTENSIONS,
 } from "@src/constants.js";
-import { uploadFile, uploadUrl } from "@src/lib/catbox.js";
+import { uploadFile, uploadUrl, deleteFiles } from "@src/lib/catbox.js";
 
 describe("Catbox Unit", () => {
   afterEach(() => {
@@ -209,6 +209,63 @@ describe("Catbox Unit", () => {
         expect.objectContaining({ signal: controller.signal })
       );
       expect(fetchSpy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe("deleteFiles", () => {
+    it.concurrent("should delete file", async () => {
+      const userhash = "userhash123";
+      const filename = "abc123.jpg";
+      const mockSuccessResult = "Files successfully deleted.";
+      const mockResponse = new Response(mockSuccessResult, { status: 200 });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const resultPromise = deleteFiles([filename], { userhash });
+
+      await expect(resultPromise).resolves.toBeUndefined();
+    });
+
+    it.concurrent("should throw if operation was aborted", async () => {
+      const userhash = "userhash123";
+      const filename = "abc123.jpg";
+      const controller = new AbortController();
+
+      const resultPromise = deleteFiles([filename], { userhash, signal: controller.signal });
+      controller.abort();
+
+      await expect(resultPromise).rejects.toThrow("This operation was aborted");
+    });
+
+    it.concurrent("should throw for invalid userhash", async () => {
+      const userhash = "####";
+      const filename = "abc123.jpg";
+
+      const resultPromise = deleteFiles([filename], { userhash });
+
+      await expect(resultPromise).rejects.toThrow(
+        `userhash ("${userhash}") must contain only lowercase letters and numbers (a-z, 0-9).`
+      );
+    });
+
+    it.concurrent("should throw if response is not ok", async () => {
+      const userhash = "userhash123";
+      const filename = "abc123.jpg";
+      const mockStatusCode = 500;
+      const mockStatusText = "Bad Request";
+      const mockResult = "Internal Error";
+      const mockResponse = new Response(mockResult, {
+        status: mockStatusCode,
+        statusText: mockStatusText,
+      });
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+      fetchSpy.mockResolvedValueOnce(mockResponse);
+
+      const resultPromise = deleteFiles([filename], { userhash });
+
+      await expect(resultPromise).rejects.toThrow(
+        `HTTP ${mockStatusCode} ${mockStatusText} Catbox ${mockResult}`
+      );
     });
   });
 });
