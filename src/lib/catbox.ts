@@ -40,6 +40,7 @@ import {
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox file URL.
+ * @throws For invalid inputs or upload failures and error responses.
  */
 export const uploadUrl = async (
   url: string,
@@ -93,6 +94,7 @@ export const uploadUrl = async (
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox file URL.
+ * @throws For invalid inputs or upload failures and error responses.
  */
 export const uploadFile = async (
   file: File,

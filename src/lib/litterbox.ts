@@ -50,6 +50,7 @@ export type LitterboxFilenameLength = (typeof LITTERBOX_FILENAME_LENGTHS)[number
  * @param options Options with `duration`, `filenameLength`, `signal`.
  *
  * @returns Litterbox file URL.
+ * @throws For invalid inputs or upload failures and error responses.
  */
 export const uploadFile = async (
   file: File,

@@ -41,6 +41,7 @@ import {
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox album URL.
+ * @throws For invalid inputs or network failures and error responses.
  */
 export const createAlbum = async (
   title: string = "",
@@ -160,6 +161,7 @@ export const deleteAlbum = async (
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox album URL.
+ * @throws For invalid inputs or network failures and error responses.
  */
 export const editAlbum = async (
   short: string,
@@ -224,6 +226,7 @@ export const editAlbum = async (
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox album URL.
+ * @throws For invalid inputs or network failures and error responses.
  */
 export const addToAlbum = async (
   short: string,
@@ -280,6 +283,7 @@ export const addToAlbum = async (
  * @param options Options with `userhash` and `signal`.
  *
  * @returns Catbox album URL.
+ * @throws For invalid inputs or network failures and error responses.
  */
 export const removeFromAlbum = async (
   short: string,
