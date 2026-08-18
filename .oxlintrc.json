@@ -23,6 +23,12 @@
         "max": 14
       }
     ],
+    "id-length": [
+      "warn",
+      {
+        "checkGeneric": false
+      }
+    ],
     "max-params": [
       "warn",
       {
